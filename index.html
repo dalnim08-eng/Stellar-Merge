@@ -612,50 +612,50 @@ function evoRule(mode,total,expand){return{mode,life:total*.68,giant:total*.15,p
 const DIFFICULTIES={
  crazy:{
   label:'크레이지',
-  note:'크레이지: 별의 시간이 폭주합니다. K형조차 오래 버티지 못하고, 거성의 외피는 난폭하게 요동칩니다.',
-  dangerScale:1.22,overLimit:2.7,pulsePhysical:.24,pulseVisual:.31,pulseKick:620,
-  spawn:{maxLag:2,bigBias:.10,fieldBias:.18,neighborBias:.10,highChance:.08},
-  evo:{3:{mode:'stable'},4:evoRule('wd',170,1.55),5:evoRule('wd',130,1.82),6:evoRule('wd',100,1.92),7:evoRule('wd',78,2.02),8:evoRule('sn',60,1.72),9:evoRule('sn',46,1.58)}
+  note:'크레이지: 작은 천체 위주로 공급되며, 항성 진화가 매우 빠르게 진행됩니다.',
+  dangerScale:1.58,overLimit:2.20,pulsePhysical:.29,pulseVisual:.34,pulseKick:760,
+  spawn:{maxLag:5,maxTier:2,bigBias:.018,fieldBias:.030,neighborBias:.018,highChance:.004},
+  evo:{3:evoRule('wd',190,1.46),4:evoRule('wd',125,1.60),5:evoRule('wd',78,1.88),6:evoRule('wd',56,1.98),7:evoRule('wd',42,2.08),8:evoRule('sn',30,1.76),9:evoRule('sn',22,1.62)}
  },
  hard:{
   label:'어려움',
-  note:'어려움: 별의 수명이 짧고, 맥동하는 거성은 주변 천체를 거칠게 밀어냅니다.',
-  dangerScale:1.08,overLimit:3.0,pulsePhysical:.19,pulseVisual:.26,pulseKick:500,
-  spawn:{maxLag:2,bigBias:.16,fieldBias:.25,neighborBias:.14,highChance:.11},
-  evo:{3:{mode:'stable'},4:{mode:'stable'},5:evoRule('wd',230,1.76),6:evoRule('wd',175,1.88),7:evoRule('wd',130,2.00),8:evoRule('sn',98,1.70),9:evoRule('sn',72,1.56)}
+  note:'어려움: 큰 천체 공급이 제한되고, G형 이상 항성이 빠르게 후반 진화로 들어갑니다.',
+  dangerScale:1.32,overLimit:2.48,pulsePhysical:.23,pulseVisual:.28,pulseKick:610,
+  spawn:{maxLag:4,maxTier:3,bigBias:.040,fieldBias:.070,neighborBias:.035,highChance:.012},
+  evo:{3:{mode:'stable'},4:{mode:'stable'},5:evoRule('wd',132,1.80),6:evoRule('wd',96,1.92),7:evoRule('wd',70,2.04),8:evoRule('sn',50,1.72),9:evoRule('sn',36,1.58)}
  },
  normal:{
   label:'보통',
   note:'보통: 융합 속도와 항성 진화가 균형을 이루는 표준 항성장입니다.',
-  dangerScale:.92,overLimit:3.35,pulsePhysical:.15,pulseVisual:.23,pulseKick:390,
-  spawn:{maxLag:1,bigBias:.23,fieldBias:.34,neighborBias:.20,highChance:.16},
-  evo:{3:{mode:'stable'},4:{mode:'stable'},5:evoRule('wd',360,1.72),6:evoRule('wd',275,1.84),7:evoRule('wd',205,1.96),8:evoRule('sn',155,1.66),9:evoRule('sn',112,1.52)}
+  dangerScale:1.00,overLimit:3.10,pulsePhysical:.16,pulseVisual:.23,pulseKick:410,
+  spawn:{maxLag:3,maxTier:4,bigBias:.12,fieldBias:.20,neighborBias:.10,highChance:.055},
+  evo:{3:{mode:'stable'},4:{mode:'stable'},5:evoRule('wd',280,1.72),6:evoRule('wd',210,1.84),7:evoRule('wd',155,1.96),8:evoRule('sn',112,1.66),9:evoRule('sn',82,1.52)}
  },
  easy:{
   label:'쉬움',
   note:'쉬움: 별들은 긴 안정기를 가지고, 더 큰 천체가 자주 흘러들어 융합의 흐름이 빨라집니다.',
   dangerScale:.70,overLimit:3.9,pulsePhysical:.11,pulseVisual:.20,pulseKick:280,
-  spawn:{maxLag:1,bigBias:.34,fieldBias:.48,neighborBias:.30,highChance:.24},
+  spawn:{maxLag:1,maxTier:5,bigBias:.34,fieldBias:.48,neighborBias:.30,highChance:.24},
   evo:{3:{mode:'stable'},4:{mode:'stable'},5:evoRule('wd',640,1.68),6:evoRule('wd',500,1.78),7:evoRule('wd',380,1.88),8:evoRule('sn',285,1.60),9:evoRule('sn',210,1.48)}
  },
  relaxed:{
   label:'느긋함',
   note:'느긋함: 별들은 천천히 늙고, 항성장은 큰 천체를 넉넉히 공급합니다.',
   dangerScale:.54,overLimit:4.45,pulsePhysical:.075,pulseVisual:.17,pulseKick:190,
-  spawn:{maxLag:0,bigBias:.44,fieldBias:.60,neighborBias:.38,highChance:.33},
+  spawn:{maxLag:0,maxTier:5,bigBias:.44,fieldBias:.60,neighborBias:.38,highChance:.33},
   evo:{3:{mode:'stable'},4:{mode:'stable'},5:evoRule('wd',900,1.62),6:evoRule('wd',720,1.70),7:evoRule('wd',540,1.80),8:evoRule('sn',400,1.55),9:evoRule('sn',300,1.44)}
  },
  very_easy:{
   label:'매우 쉬움',
   note:'매우 쉬움: 별은 늙지 않습니다. 큰 천체가 자주 등장하며, 융합 자체에 집중할 수 있습니다.',
   dangerScale:.38,overLimit:5.1,pulsePhysical:0,pulseVisual:0,pulseKick:0,noEvolution:true,
-  spawn:{maxLag:0,bigBias:.52,fieldBias:.68,neighborBias:.44,highChance:.40},
+  spawn:{maxLag:0,maxTier:5,bigBias:.52,fieldBias:.68,neighborBias:.44,highChance:.40},
   evo:{3:{mode:'stable'},4:{mode:'stable'},5:{mode:'stable'},6:{mode:'stable'},7:{mode:'stable'},8:{mode:'stable'},9:{mode:'stable'}}
  }
 };
 function difficulty(){return DIFFICULTIES[state.difficultyKey]||DIFFICULTIES.normal}
 function getEvoRule(tier){const d=difficulty();if(d.noEvolution)return{mode:'stable'};return d.evo[tier]||{mode:'stable'}}
-const state={running:false,paused:false,ending:false,difficultyKey:'normal',menuTime:0,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,dropX:0,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,box:{x:0,y:0,w:0,h:0,dangerY:0},gameScale:1,gameOffsetX:0,gameOffsetY:0,bodies:[],particles:[],shockwaves:[],stars:[],keys:new Set(),supernova:null,nebulaEffect:null,audioReady:false,audioCtx:null,soundOn:true};let last=performance.now(),nextId=1;
+const state={running:false,paused:false,ending:false,difficultyKey:'normal',menuTime:0,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,dropX:0,lastDropX:null,sameDropStreak:0,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,box:{x:0,y:0,w:0,h:0,dangerY:0},gameScale:1,gameOffsetX:0,gameOffsetY:0,bodies:[],particles:[],shockwaves:[],stars:[],keys:new Set(),supernova:null,nebulaEffect:null,audioReady:false,audioCtx:null,soundOn:true};let last=performance.now(),nextId=1;
 function resize(){
  const vw=Math.floor(window.visualViewport?.width||innerWidth),vh=Math.floor(window.visualViewport?.height||innerHeight);
  const dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
@@ -685,7 +685,7 @@ function resize(){
  makeStars()
 }
 function makeStars(){const vw=window.visualViewport?.width||innerWidth,vh=window.visualViewport?.height||innerHeight;state.stars=[];let count=Math.floor(vw*vh/7600);for(let i=0;i<count;i++)state.stars.push({x:Math.random()*vw,y:Math.random()*vh,r:Math.random()*1.5+.25,a:Math.random()*.55+.12,tw:Math.random()*3.7+.7})}
-function reset(){Object.assign(state,{running:true,paused:false,ending:false,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,bodies:[],particles:[],shockwaves:[],supernova:null,nebulaEffect:null,dropX:state.box.w/2});ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.endCard.classList.add('hidden');ui.hud.classList.remove('hidden');ui.infoPanel.classList.remove('hidden');ui.touchControls.classList.remove('hidden');updateUI();last=performance.now();requestAnimationFrame(loop)}
+function reset(){Object.assign(state,{running:true,paused:false,ending:false,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,bodies:[],particles:[],shockwaves:[],supernova:null,nebulaEffect:null,dropX:state.box.w/2,lastDropX:null,sameDropStreak:0});ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.endCard.classList.add('hidden');ui.hud.classList.remove('hidden');ui.infoPanel.classList.remove('hidden');ui.touchControls.classList.remove('hidden');updateUI();last=performance.now();requestAnimationFrame(loop)}
 function loop(now){if(!state.running)return;let dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;if(!state.paused){if(state.ending){state.time+=dt;updateEffects(dt);updateEndingEffects(dt)}else update(dt)}draw();requestAnimationFrame(loop)}
 function update(dt){state.time+=dt;state.cooldown-=dt;handleDropperMove(dt);updateEvolution(dt);updatePhysics(dt);updateEffects(dt);updateEndingEffects(dt);checkOverfill(dt);updateUI()}
 function handleDropperMove(dt){let move=360*dt;if(state.keys.has('a')||state.keys.has('ArrowLeft'))state.dropX-=move;if(state.keys.has('d')||state.keys.has('ArrowRight'))state.dropX+=move;let r=TIERS[state.currentTier].r;state.dropX=clamp(state.dropX,state.box.x+r+6,state.box.x+state.box.w-r-6)}
@@ -697,36 +697,52 @@ function stabilizeBodies(dt){const floor=state.box.y+state.box.h;for(const a of 
 function createBody(tier,x,y,vx=0,vy=0){const t=TIERS[tier],m=Math.max(1,t.r*t.r*(1+tier*.08));return{id:nextId++,tier,x,y,vx,vy,r:t.r,visualR:t.r,baseR:t.r,targetR:t.r,mass:m,gravMass:m,rot:Math.random()*Math.PI*2,spin:(Math.random()-.5)*1.8,fresh:.12,dead:false,born:state.time,age:0,evoPhase:'normal',evoProgress:0,whiteDwarf:false,thermal:.5,pulseSeed:Math.random()*999}}
 function processMerges(pairs){const used=new Set();for(const[idA,idB]of pairs){if(used.has(idA)||used.has(idB))continue;const a=state.bodies.find(b=>b.id===idA&&!b.dead),b=state.bodies.find(b=>b.id===idB&&!b.dead);if(!a||!b)continue;if(a.whiteDwarf&&b.whiteDwarf){used.add(idA);used.add(idB);if(processWhiteDwarfMerge(a,b))return;continue}if(a.tier!==b.tier)continue;used.add(idA);used.add(idB);a.dead=b.dead=true;let tier=a.tier,x=(a.x*a.mass+b.x*b.mass)/(a.mass+b.mass),y=(a.y*a.mass+b.y*b.mass)/(a.mass+b.mass),vx=(a.vx+b.vx)*.22,vy=(a.vy+b.vy)*.22;if(tier===TIERS.length-1){triggerSupernova(x,y,'merge');return}let nt=tier+1,created=createBody(nt,x,y,vx,vy-80);created.fresh=.22;state.bodies.push(created);state.combo++;state.bestTier=Math.max(state.bestTier,nt);let gain=Math.round(TIERS[nt].score*(1+state.combo*.08));state.score+=gain;state.fuel=clamp(state.fuel+10+nt*5+state.combo*1.6,0,100);popText(x,y-created.r-8,'+'+gain,TIERS[nt].glow);burst(x,y,34+nt*5,TIERS[nt].glow,.55+nt*.04,140+nt*12);shockwave(x,y,created.r*.4,created.r*2.1,TIERS[nt].glow);soundMerge(nt);if(state.combo>=3){state.score+=20*state.combo;state.fuel=clamp(state.fuel+8,0,100);popText(x,y+created.r+18,'융합 콤보 x'+state.combo,'#fef08a')}}state.bodies=state.bodies.filter(b=>!b.dead)}
 function processWhiteDwarfMerge(a,b){const ma=a.wdMass||.62,mb=b.wdMass||.62,totalWd=ma+mb,x=(a.x*ma+b.x*mb)/totalWd,y=(a.y*ma+b.y*mb)/totalWd,vx=(a.vx*a.mass+b.vx*b.mass)/(a.mass+b.mass)*.18,vy=(a.vy*a.mass+b.vy*b.mass)/(a.mass+b.mass)*.18;a.dead=true;b.dead=true;if(totalWd>=1.4){state.bodies=state.bodies.filter(o=>!o.dead&&o!==a&&o!==b);triggerTypeIaSupernova(x,y,totalWd);return true}let tier=Math.max(a.tier,b.tier,5),wd=createBody(tier,x,y,vx,vy-40);wd.whiteDwarf=true;wd.evoPhase='whiteDwarf';wd.age=0;wd.wdMass=totalWd;wd.progenitorTier=Math.max(a.progenitorTier||a.tier,b.progenitorTier||b.tier);wd.baseR=clamp(12+totalWd*6,14,23);wd.r=wd.baseR;wd.visualR=wd.baseR;wd.mass=Math.max(1000,totalWd*1050);wd.gravMass=wd.mass*.55;wd.fresh=.28;wd.spin=(Math.random()-.5)*2.2;state.bodies.push(wd);let gain=Math.round(1800+totalWd*1200);state.score+=gain;state.fuel=clamp(state.fuel+18,0,100);popText(x,y-wd.r-12,`백색왜성 병합 ${totalWd.toFixed(2)}M☉`,'#e0f2fe');burst(x,y,80,'#e0f2fe',1.2,190);shockwave(x,y,wd.r*.6,wd.r*3.0,'#e0f2fe');soundMerge(8);return false}
-function dropCurrent(){if(!state.running||state.paused||state.ending||!state.canDrop||state.cooldown>0)return;unlockAudio();const t=TIERS[state.currentTier],x=clamp(state.dropX,state.box.x+t.r+6,state.box.x+state.box.w-t.r-6),y=state.box.y+16;state.bodies.push(createBody(state.currentTier,x,y,(Math.random()-.5)*18,35));state.currentTier=state.nextTier;state.nextTier=randomDropTier();state.canDrop=false;state.cooldown=.38;setTimeout(()=>state.canDrop=true,300);updateUI()}
+function dropCurrent(){
+ if(!state.running||state.paused||state.ending||!state.canDrop||state.cooldown>0)return;
+ unlockAudio();
+
+ const t=TIERS[state.currentTier];
+ const x=clamp(state.dropX,state.box.x+t.r+6,state.box.x+state.box.w-t.r-6);
+ const y=state.box.y+16;
+
+ state.bodies.push(createBody(state.currentTier,x,y,0,35));
+
+ state.currentTier=state.nextTier;
+ state.nextTier=randomDropTier();
+ state.canDrop=false;
+ state.cooldown=.38;
+ setTimeout(()=>state.canDrop=true,300);
+ updateUI()
+}
 function randomDropTier(){
- const d=difficulty(),s=d.spawn||{maxLag:2,bigBias:.18,fieldBias:.25,neighborBias:.14,highChance:.1};
- const unlocked=Math.max(1,state.bestTier-(s.maxLag??2));
- const cap=Math.min(5,unlocked);
+ const d=difficulty(),s=d.spawn||{maxLag:3,bigBias:.12,fieldBias:.20,neighborBias:.10,highChance:.055,maxTier:4};
+ const unlocked=Math.max(1,state.bestTier-(s.maxLag??3));
+ const cap=Math.max(1,Math.min(s.maxTier??5,unlocked));
  const counts=Array(cap+1).fill(0);
+
  for(const b of state.bodies){
   if(!b.dead&&!b.whiteDwarf&&b.tier<=cap)counts[b.tier]+=1;
  }
+
  let dominant=0;
  for(let i=1;i<counts.length;i++)if(counts[i]>counts[dominant])dominant=i;
 
  const weights=[];
  const capNorm=Math.max(1,cap);
  for(let i=0;i<=cap;i++){
-  const base=Math.pow(.62,i)*(1-s.bigBias);
-  const advanced=Math.pow((i+1)/(capNorm+1),1.55)*4*s.bigBias;
+  const base=Math.pow(.72,i)*(1-s.bigBias);
+  const advanced=Math.pow((i+1)/(capNorm+1),1.9)*2.7*s.bigBias;
   const gap=Math.abs(i-dominant);
-  const field=counts[i]*(s.fieldBias*1.6)
+  const field=counts[i]*(s.fieldBias*.85)
     +(counts[i-1]||0)*s.neighborBias
     +(counts[i+1]||0)*s.neighborBias
-    +(gap===0?s.fieldBias*1.3:gap===1?s.fieldBias*.8:gap===2?s.fieldBias*.25:0);
-  const high=(i===cap&&cap>=2)?s.highChance*2.4:0;
-  weights[i]=Math.max(.02,base+advanced+field+high);
+    +(gap===0?s.fieldBias*.55:gap===1?s.fieldBias*.30:0);
+  const high=(i===cap&&cap>=2)?s.highChance*.85:0;
+  weights[i]=Math.max(.025,base+advanced+field+high);
  }
 
- // 낮은 난이도에서는 최고 단계 근처의 재료가 가끔 직접 들어와 흐름이 끊기지 않게 한다.
  if(cap>=2&&Math.random()<s.highChance){
-  const near=clamp(cap-(Math.random()<.72?0:1),0,cap);
-  return near;
+  return clamp(cap-(Math.random()<.62?0:1),0,cap);
  }
 
  let sum=weights.reduce((a,b)=>a+b,0),r=Math.random()*sum;
@@ -735,6 +751,48 @@ function randomDropTier(){
 }
 function igniteCurrent(){if(!state.running||state.paused||state.ending)return;if(state.fuel<100){popText(state.dropX,state.box.y+54,'에너지 부족','#93c5fd');soundBlip(160,.06,'triangle',.04);return}if(state.currentTier>=Math.min(TIERS.length-2,state.bestTier+1)){popText(state.dropX,state.box.y+54,'점화 조건 미달','#fbbf24');return}state.currentTier++;state.fuel=0;state.bestTier=Math.max(state.bestTier,state.currentTier);burst(state.dropX,state.box.y+36,18,TIERS[state.currentTier].glow,.4,120);soundIgnite();updateUI()}
 
+function giantScaleCap(tier){
+ // 병합 퍼즐로서의 공간을 유지하기 위해 실제 충돌 반지름은 원본의 약 1.3~1.4배 선에서 제한한다.
+ if(tier>=8)return 1.30;
+ if(tier>=7)return 1.34;
+ if(tier>=6)return 1.38;
+ return 1.42;
+}
+function pulseVisualCap(tier){
+ // 시각적 요동은 실제 충돌 반지름보다 조금만 더 허용한다.
+ if(tier>=8)return 1.48;
+ if(tier>=7)return 1.52;
+ return 1.56;
+}
+function chaoticPulseStep(b,dt){
+ // 느린 정현파가 아니라, 짧은 열 맥동 사건이 불규칙하게 터지고 빠르게 감쇠한다.
+ if(!Number.isFinite(b.nextThermalPulse)){
+  b.nextThermalPulse=.10+Math.random()*.45;
+  b.pulseBurst=0;
+  b.pulseBurstAge=99;
+ }
+ b.nextThermalPulse-=dt;
+ b.pulseBurstAge=(b.pulseBurstAge??99)+dt;
+
+ if(b.nextThermalPulse<=0){
+  const amp=.38+Math.random()*.62;
+  b.pulseBurst=amp;
+  b.pulseBurstAge=0;
+  b.nextThermalPulse=.14+Math.random()*.62;
+  b.pulseSide=(Math.random()<.5?-1:1);
+ }
+
+ // 급격히 치고 올라갔다가 감쇠하는 형태
+ const age=b.pulseBurstAge??99;
+ const attack=1-Math.exp(-age*36);
+ const decay=Math.exp(-age*(4.7+Math.random()*.35));
+ const burst=(b.pulseBurst||0)*attack*decay;
+
+ // 작은 표면 요동만 더한다. 전체 크기를 크게 키우기 위한 값이 아니다.
+ const flutter=.18*Math.sin(state.time*(18.0+b.tier*.9)+b.pulseSeed)
+              +.10*Math.sin(state.time*(31.0+b.id*.17)+b.pulseSeed*.41);
+ return clamp(burst+flutter,-.35,1.0);
+}
 function updateEvolution(dt){
  for(const b of state.bodies){
   if(b.dead||b.whiteDwarf)continue;
@@ -742,6 +800,9 @@ function updateEvolution(dt){
   if(!rule||rule.mode==='stable')continue;
   b.age+=dt;
   const life=rule.life,giant=rule.giant,pulse=rule.pulse,base=b.baseR||TIERS[b.tier].r;
+  const cap=giantScaleCap(b.tier);
+  const maxGiantScale=Math.min(rule.expand,cap);
+  const maxVisualScale=pulseVisualCap(b.tier);
 
   if(b.age<life){
    b.evoPhase='normal';
@@ -750,48 +811,57 @@ function updateEvolution(dt){
    setPhysicalRadius(b,base,dt,5.0);
    b.visualR=base*(1+.012*Math.sin(state.time*.9+b.id));
    b.gravMass=b.mass;
+   b.pulseBurst=0;
   }else if(b.age<life+giant){
    let p=(b.age-life)/giant;
    b.evoPhase='giant';
    b.evoProgress=p;
-   let swell=1+(rule.expand-1)*smoothstep(p);
-   setPhysicalRadius(b,base*swell,dt,1.35);
-   let rough=roughPulse(b)*.018;
-   b.visualR=b.r*(1+rough);
-   b.thermal=clamp(.58-.28*p+.05*roughPulse(b),0,1);
+
+   // 거성화는 되지만 원본 크기 대비 과도하게 커지지 않도록 제한한다.
+   let swell=1+(maxGiantScale-1)*smoothstep(p);
+   setPhysicalRadius(b,base*swell,dt,1.75);
+
+   let rough=chaoticPulseStep(b,dt)*.010;
+   b.visualR=clamp(b.r*(1+rough),base*.96,base*maxVisualScale);
+   b.thermal=clamp(.58-.28*p+.04*roughPulseFast(b),0,1);
    b.gravMass=b.mass;
-   if(Math.random()<dt*.75){
+
+   if(Math.random()<dt*1.05){
     const c=getBodyColors(b).glow;
-    burst(b.x+(Math.random()-.5)*b.visualR,b.y+(Math.random()-.5)*b.visualR,2,c,.35,50);
+    burst(b.x+(Math.random()-.5)*b.visualR,b.y+(Math.random()-.5)*b.visualR,2,c,.32,54);
    }
   }else if(b.age<life+giant+pulse){
    let p=(b.age-life-giant)/pulse;
-   let rough=roughPulse(b);
-   let slow=roughPulseSlow(b);
    b.evoPhase='pulse';
    b.evoProgress=p;
 
    const dcfg=difficulty();
-   const physicalAmp=dcfg.pulsePhysical*(1-p*.28);
-   const visualAmp=dcfg.pulseVisual*(1-p*.18);
-   let spike=Math.sign(rough)*Math.pow(Math.abs(rough),.52);
-   let hardJitter=.055*Math.sin(state.time*(31+b.tier*1.7)+b.pulseSeed*.29)+.035*Math.sin(state.time*(47+b.id*.13)+b.pulseSeed);
-   const pulseValue=clamp(spike+hardJitter,-1,1);
+   const pulseValue=chaoticPulseStep(b,dt);
    const prevPulse=b.lastPulseValue??pulseValue;
    b.lastPulseValue=pulseValue;
-   setPhysicalRadius(b,base*rule.expand*(1+physicalAmp*pulseValue),dt,4.3+dcfg.pulsePhysical*10);
-   b.visualR=clamp(b.r*(1+visualAmp*pulseValue+.045*Math.sin(state.time*19.0+b.pulseSeed)),b.r*(1-visualAmp*.85),b.r*(1+visualAmp*1.18));
-   const rise=Math.max(0,pulseValue-prevPulse);
-   if(rise>.018)applyPulseImpulse(b,rise,dcfg.pulseKick,dt);
 
-   // 거성 표면은 팽창하며 대체로 차갑게 보이므로, 청백/백색이 아니라 황색~주황색 계열로 천천히 이동시킨다.
-   b.thermal=clamp(.43+.18*rough-.20*p,0,1);
+   // 크기 변화는 작게 제한하고, 위협성은 짧은 충격파/밀어냄으로 표현한다.
+   const physicalAmp=Math.min(.075,dcfg.pulsePhysical*.32)*(1-p*.20);
+   const visualAmp=Math.min(.115,dcfg.pulseVisual*.42)*(1-p*.15);
+   const baseScale=maxGiantScale;
+   const targetScale=clamp(baseScale*(1+physicalAmp*pulseValue),1.0,cap+.06);
+   setPhysicalRadius(b,base*targetScale,dt,8.5);
+
+   const flicker=.020*Math.sin(state.time*(42+b.tier*2.3)+b.pulseSeed*.29)
+               +.014*Math.sin(state.time*(67+b.id*.13)+b.pulseSeed);
+   b.visualR=clamp(b.r*(1+visualAmp*pulseValue+flicker),base*.94,base*maxVisualScale);
+
+   const rise=Math.max(0,pulseValue-prevPulse);
+   if(rise>.075)applyPulseImpulse(b,rise,dcfg.pulseKick*1.18,dt);
+
+   // 열 맥동 때는 온도와 색이 불규칙하게 요동하되, 거성 색 범위 안에 머문다.
+   b.thermal=clamp(.39+.23*pulseValue-.18*p,0,1);
    b.gravMass=b.mass;
 
-   if(Math.random()<dt*(2.5+b.tier*.18)){
+   if(rise>.10||Math.random()<dt*(3.2+b.tier*.25)){
     let a=Math.random()*Math.PI*2;
     let col=getBodyColors(b).glow;
-    burst(b.x+Math.cos(a)*b.visualR*.76,b.y+Math.sin(a)*b.visualR*.76,3,col,.44,95);
+    burst(b.x+Math.cos(a)*b.visualR*.74,b.y+Math.sin(a)*b.visualR*.74,Math.ceil(2+rise*12),col,.36,110+rise*210);
    }
   }else{
    if(rule.mode==='wd')transformToWhiteDwarf(b);
@@ -800,10 +870,13 @@ function updateEvolution(dt){
  }
 }
 function roughPulse(b){
+ return chaoticPulseStep(b,0);
+}
+function roughPulseFast(b){
  const t=state.time;
- let v=.55*Math.sin(t*(6.8+b.tier*.31)+b.pulseSeed)
-      +.30*Math.sin(t*(12.9+b.tier*.19)+b.pulseSeed*.73)
-      +.18*Math.sin(t*(21.7+b.tier*.11)+b.id*1.91);
+ let v=.52*Math.sin(t*(11.8+b.tier*.47)+b.pulseSeed)
+      +.31*Math.sin(t*(24.2+b.tier*.31)+b.id*1.91)
+      +.17*Math.sin(t*(39.0+b.id*.17)+b.pulseSeed*.53);
  return clamp(v,-1,1);
 }
 function roughPulseSlow(b){
@@ -814,23 +887,24 @@ function roughPulseSlow(b){
 }
 function applyPulseImpulse(source,rise,kick,dt){
  if(!kick||rise<=0)return;
- const range=(source.visualR||source.r)*.95;
+ const range=(source.r||source.visualR)*1.10;
  for(const o of state.bodies){
   if(o===source||o.dead)continue;
   let dx=o.x-source.x,dy=o.y-source.y,dist=Math.hypot(dx,dy)||.001;
   let reach=(source.r+o.r)+range;
   if(dist>reach)continue;
   let nx=dx/dist,ny=dy/dist,fall=1-dist/reach;
-  let impulse=kick*rise*(.25+fall*.95);
+  let impulse=kick*Math.min(.42,rise)*(.38+fall*1.20);
   o.vx+=nx*impulse;
-  o.vy+=ny*impulse*.9-18*rise;
-  o.fresh=Math.max(o.fresh||0,.04);
+  o.vy+=ny*impulse*.82-34*rise;
+  o.fresh=Math.max(o.fresh||0,.065);
  }
- source.vx+=(Math.random()-.5)*kick*rise*.08;
- source.vy-=kick*rise*.025;
- if(Math.random()<.32+rise*2){
+ source.vx+=(Math.random()-.5)*kick*rise*.05;
+ source.vy-=kick*rise*.018;
+ if(Math.random()<.58+rise*1.9){
   let col=getBodyColors(source).glow;
-  burst(source.x,source.y,Math.ceil(4+rise*20),col,.34,90+kick*.12);
+  burst(source.x,source.y,Math.ceil(5+rise*26),col,.30,120+kick*.11);
+  shockwave(source.x,source.y,source.r*.65,source.r*(1.45+rise*.85),col);
  }
 }
 function setPhysicalRadius(b,target,dt,rate=1.2){
@@ -878,7 +952,17 @@ function triggerNaturalSupernova(b){
  state.bodies=state.bodies.filter(o=>!o.dead&&o!==b);
  triggerSupernova(x,y,'natural');
 }
-function checkOverfill(dt){let risky=false;for(const b of state.bodies){let speed=Math.hypot(b.vx,b.vy);if(b.y-b.r<state.box.dangerY&&state.time-b.born>1&&speed<170){risky=true;break}}const d=difficulty();if(risky)state.overfill+=dt*d.dangerScale;else state.overfill=Math.max(0,state.overfill-dt*1.35);if(state.overfill>=d.overLimit)triggerCollapseEnding()}
+function checkOverfill(dt){
+ let risky=false;
+ for(const b of state.bodies){
+  let speed=Math.hypot(b.vx,b.vy);
+  if(b.y-b.r<state.box.dangerY&&state.time-b.born>1&&speed<190){risky=true;break}
+ }
+ const d=difficulty();
+ if(risky)state.overfill+=dt*d.dangerScale;
+ else state.overfill=Math.max(0,state.overfill-dt*1.20);
+ if(state.overfill>=d.overLimit)triggerCollapseEnding()
+}
 function triggerCollapseEnding(){state.ending=true;let cx=state.box.x+state.box.w/2,cy=state.box.y+state.box.h*.38;state.nebulaEffect={x:cx,y:cy,t:0,d:1.7};burst(cx,cy,180,'#fb7185',1.8,250);burst(cx,cy,120,'#fbbf24',1.5,210);shockwave(cx,cy,10,Math.max(state.box.w,state.box.h)*.75,'#fb7185');soundNebula();setTimeout(()=>{showEnding('항성장 붕괴',`천체가 한계선 위에 오래 머물러 병합장이 불안정해졌습니다. 최종 점수는 ${state.score}점, 최고 단계는 ${TIERS[state.bestTier].name}입니다.`,'천체 밀도가 한계치를 넘어 항성장이 붕괴했습니다. 더 큰 별을 만들기 전에 공간을 확보하고, 늙은 별의 외피 방출을 이용해 흐름을 되돌리십시오.');state.running=false;draw()},1700)}
 function triggerTypeIaSupernova(x,y,wdMass){state.score+=12000+Math.round(wdMass*4000);state.shake=38;burst(x,y,260,'#ffffff',2.1,620);burst(x,y,260,'#e0f2fe',2.4,540);burst(x,y,120,'#fef3c7',1.9,460);shockwave(x,y,10,Math.max(innerWidth,innerHeight)*.95,'#e0f2fe');triggerSupernova(x,y,'ia')}
 function triggerSupernova(x,y,source='merge'){state.ending=true;state.score+=source==='merge'?50000:source==='ia'?26000:32000;state.bestTier=TIERS.length-1;state.bodies=[];state.shake=source==='ia'?42:34;state.supernova={x,y,t:0,d:source==='ia'?2.35:2.8,kind:source};burst(x,y,source==='ia'?620:520,'#ffffff',source==='ia'?2.4:2.7,source==='ia'?820:720);burst(x,y,source==='ia'?470:360,'#60a5fa',source==='ia'?2.6:3.0,source==='ia'?690:610);burst(x,y,source==='ia'?160:300,'#fb7185',2.6,540);burst(x,y,source==='ia'?260:230,'#fbbf24',2.4,500);shockwave(x,y,12,Math.max(innerWidth,innerHeight)*1.15,'#ffffff');shockwave(x,y,32,Math.max(innerWidth,innerHeight)*.72,'#60a5fa');soundSupernova();setTimeout(()=>{let title,text,route;if(source==='merge'){title='초신성 엔딩';text=`O형 주계열성 두 개가 병합되어 거대한 폭발을 일으켰습니다. 최종 점수는 ${state.score}점입니다.`;route='거대 가스행성의 씨앗이 고질량 주계열성으로 성장했고, 마지막 충돌은 우주를 가르는 초신성으로 이어졌습니다.'}else if(source==='ia'){title='Ia형 초신성 엔딩';text=`백색왜성 병합 질량이 한계를 넘어 열핵 폭발을 일으켰습니다. 최종 점수는 ${state.score}점입니다.`;route='식어가던 별의 잔해들이 한계를 넘어섰습니다. 조용한 백색왜성은 다시 눈부신 열핵 폭발로 타올랐습니다.'}else{title='핵붕괴 초신성 엔딩';text=`고질량 주계열성이 수명을 다해 핵붕괴 초신성으로 폭발했습니다. 최종 점수는 ${state.score}점입니다.`;route='고질량 별의 중심핵이 버티지 못하고 무너졌습니다. 남은 것은 초신성의 빛과 극도로 밀집된 잔해뿐입니다.'}showEnding(title,text,route);state.running=false;draw()},source==='ia'?2350:2800)}
@@ -1066,8 +1150,8 @@ function drawWhiteDwarf(b){
  let r=b.r,pulse=.55+.45*Math.sin(state.time*4+b.id);
  ctx.globalCompositeOperation='lighter';
  let glow=ctx.createRadialGradient(b.x,b.y,r*.2,b.x,b.y,r*2.8);
- glow.addColorStop(0,`rgba(255,255,255,${.35+.12*pulse})`);
- glow.addColorStop(.45,`rgba(186,230,253,${.18+.08*pulse})`);
+ glow.addColorStop(0,`rgba(255,255,255,${.34+.10*pulse})`);
+ glow.addColorStop(.45,`rgba(186,230,253,${.16+.07*pulse})`);
  glow.addColorStop(1,'rgba(0,0,0,0)');
  ctx.fillStyle=glow;ctx.beginPath();ctx.arc(b.x,b.y,r*2.8,0,Math.PI*2);ctx.fill();
  ctx.globalCompositeOperation='source-over';
@@ -1085,28 +1169,36 @@ function drawEvolutionOverlay(b){
  const colors=getBodyColors(b);
  ctx.save();
  if(b.evoPhase==='giant'||b.evoPhase==='pulse'){
-  ctx.globalCompositeOperation='lighter';
-  let rough=b.evoPhase==='pulse'?Math.abs(roughPulse(b)):.28;
-  let g=ctx.createRadialGradient(b.x,b.y,vr*.15,b.x,b.y,vr*(1.22+rough*.22));
-  g.addColorStop(0,hexToRgba(colors.color1,.16+.10*rough));
-  g.addColorStop(.52,hexToRgba(colors.glow,.16+.14*rough));
+  ctx.globalCompositeOperation='screen';
+  let rough=b.evoPhase==='pulse'?Math.abs(b.lastPulseValue??0):.16;
+  let g=ctx.createRadialGradient(b.x,b.y,vr*.22,b.x,b.y,vr*(1.16+rough*.12));
+  g.addColorStop(0,hexToRgba(colors.color1,.10+.06*rough));
+  g.addColorStop(.48,hexToRgba(colors.glow,.08+.09*rough));
   g.addColorStop(1,'rgba(0,0,0,0)');
-  ctx.fillStyle=g;ctx.beginPath();ctx.arc(b.x,b.y,vr*(1.24+rough*.18),0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(b.x,b.y,vr*(1.18+rough*.10),0,Math.PI*2);ctx.fill();
  }
  if(b.evoPhase==='pulse'){
-  const rp=roughPulse(b);
-  ctx.strokeStyle=hexToRgba(colors.glow,.34+.22*Math.abs(rp));
-  ctx.lineWidth=1.5+2.2*Math.abs(rp);
-  ctx.setLineDash([Math.max(3,vr*.08),Math.max(7,vr*.12)]);
-  ctx.beginPath();ctx.arc(b.x,b.y,vr*(1.06+.07*Math.abs(rp)),0,Math.PI*2);ctx.stroke();
-  ctx.setLineDash([]);
+  const rp=Math.max(0,b.lastPulseValue??0);
+  ctx.globalCompositeOperation='screen';
+
+  // 규칙적인 점선 링 대신, 순간적으로 찢어지는 듯한 불규칙 호를 그린다.
+  for(let i=0;i<3;i++){
+   const seed=b.id*12.989+i*4.17+Math.floor(state.time*7.5);
+   const a=(Math.sin(seed)*43758.5453%1)*Math.PI*2;
+   const len=.35+.28*Math.abs(Math.sin(seed*1.7));
+   ctx.strokeStyle=hexToRgba(colors.glow,(.10+.26*rp)*(1-i*.18));
+   ctx.lineWidth=Math.max(1,vr*(.010+.012*rp));
+   ctx.beginPath();
+   ctx.arc(b.x,b.y,vr*(1.025+.045*i+.035*rp),a,a+len);
+   ctx.stroke();
+  }
  }
  if(rule.mode==='wd'||rule.mode==='sn'){
   let total=rule.life+rule.giant+rule.pulse,prog=clamp(b.age/total,0,1);
   ctx.globalCompositeOperation='source-over';
-  ctx.strokeStyle=b.evoPhase==='normal'?'rgba(255,255,255,.22)':hexToRgba(colors.glow,.65);
-  ctx.lineWidth=Math.max(1.5,vr*.04);
-  ctx.beginPath();ctx.arc(b.x,b.y,vr+5,-Math.PI/2,-Math.PI/2+Math.PI*2*prog);ctx.stroke();
+  ctx.strokeStyle=b.evoPhase==='normal'?'rgba(255,255,255,.22)':hexToRgba(colors.glow,.52);
+  ctx.lineWidth=Math.max(1.3,vr*.025);
+  ctx.beginPath();ctx.arc(b.x,b.y,vr+4,-Math.PI/2,-Math.PI/2+Math.PI*2*prog);ctx.stroke();
  }
  ctx.restore()
 }
@@ -1128,7 +1220,136 @@ function getBodyColors(b){
   glow:mixColor(p.glowCool,p.glowWarm,temp)
  };
 }
-function drawCelestial(x,y,r,tierIndex,rot=0,alpha=1,override=null){let t=TIERS[tierIndex],c=override||{color1:t.color1,color2:t.color2,glow:t.glow};ctx.save();ctx.globalAlpha=alpha;let glow=ctx.createRadialGradient(x,y,r*.2,x,y,r*2.15);glow.addColorStop(0,hexToRgba(c.glow,tierIndex<3?.12:.27));glow.addColorStop(.48,hexToRgba(c.glow,tierIndex<3?.07:.13));glow.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=glow;ctx.beginPath();ctx.arc(x,y,r*2.1,0,Math.PI*2);ctx.fill();let body=ctx.createRadialGradient(x-r*.34,y-r*.4,r*.08,x,y,r*1.15);body.addColorStop(0,c.color1);body.addColorStop(.48,mixColor(c.color1,c.color2,.36));body.addColorStop(1,c.color2);ctx.fillStyle=body;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();if(tierIndex<=2)drawGasBands(x,y,r,rot,tierIndex);else drawStarSurface(x,y,r,rot,tierIndex,c);ctx.strokeStyle='rgba(255,255,255,.34)';ctx.lineWidth=Math.max(1,r*.035);ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();ctx.fillStyle=tierIndex>=7?'#0f172a':'rgba(255,255,255,.92)';ctx.font=`900 ${Math.max(10,r*.36)}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t.short,x,y+r*.02);ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.restore()}
+function drawStellarBloom(x,y,r,tierIndex,c,phase=0){
+ if(tierIndex<3)return;
+
+ const starPower=clamp((tierIndex-2)/7,0,1);
+ const pulse=.88+.12*Math.sin(state.time*(1.2+tierIndex*.06)+phase);
+ const bloomR=r*(2.2+starPower*.75);
+
+ ctx.save();
+ ctx.globalCompositeOperation='screen';
+
+ // 중심에서 주변으로 서서히 사라지는 확산광. 선명한 테두리는 만들지 않는다.
+ let outer=ctx.createRadialGradient(x,y,r*.35,x,y,bloomR);
+ outer.addColorStop(0,hexToRgba(c.color1,(.20+.08*starPower)*pulse));
+ outer.addColorStop(.18,hexToRgba(c.glow,(.16+.08*starPower)*pulse));
+ outer.addColorStop(.42,hexToRgba(c.glow,(.070+.050*starPower)*pulse));
+ outer.addColorStop(.72,hexToRgba(c.glow,(.025+.026*starPower)*pulse));
+ outer.addColorStop(1,'rgba(0,0,0,0)');
+ ctx.fillStyle=outer;
+ ctx.beginPath();
+ ctx.arc(x,y,bloomR,0,Math.PI*2);
+ ctx.fill();
+
+ // 표면 바로 바깥의 얇은 광휘도 흐릿하게만 처리한다.
+ let near=ctx.createRadialGradient(x,y,r*.78,x,y,r*1.34);
+ near.addColorStop(0,'rgba(255,255,255,0)');
+ near.addColorStop(.52,hexToRgba(c.color1,(.12+.08*starPower)*pulse));
+ near.addColorStop(1,'rgba(0,0,0,0)');
+ ctx.fillStyle=near;
+ ctx.beginPath();
+ ctx.arc(x,y,r*1.36,0,Math.PI*2);
+ ctx.fill();
+
+ // 고온 항성의 빛살도 아주 약하고 넓게만 남긴다.
+ if(tierIndex>=6){
+  const len=r*(1.55+starPower*.95);
+  const rayAlpha=.035+.040*starPower;
+  for(const a of [0,Math.PI/2]){
+   ctx.save();
+   ctx.translate(x,y);
+   ctx.rotate(a+Math.sin(state.time*.38+phase)*.006);
+   const g=ctx.createLinearGradient(-len,0,len,0);
+   g.addColorStop(0,'rgba(255,255,255,0)');
+   g.addColorStop(.48,hexToRgba(c.glow,rayAlpha));
+   g.addColorStop(.50,`rgba(255,255,255,${rayAlpha*.9})`);
+   g.addColorStop(.52,hexToRgba(c.glow,rayAlpha));
+   g.addColorStop(1,'rgba(255,255,255,0)');
+   ctx.fillStyle=g;
+   const w=Math.max(1,r*.012);
+   ctx.beginPath();
+   ctx.moveTo(-len,-w);
+   ctx.lineTo(len,-w*.25);
+   ctx.lineTo(len,w*.25);
+   ctx.lineTo(-len,w);
+   ctx.closePath();
+   ctx.fill();
+   ctx.restore();
+  }
+ }
+
+ ctx.restore();
+}
+function drawCelestial(x,y,r,tierIndex,rot=0,alpha=1,override=null){
+ let t=TIERS[tierIndex],c=override||{color1:t.color1,color2:t.color2,glow:t.glow};
+ ctx.save();
+ ctx.globalAlpha=alpha;
+
+ drawStellarBloom(x,y,r,tierIndex,c,rot);
+
+ let glow=ctx.createRadialGradient(x,y,r*.2,x,y,r*(tierIndex<3?2.15:2.55));
+ glow.addColorStop(0,hexToRgba(c.glow,tierIndex<3?.12:.36));
+ glow.addColorStop(.42,hexToRgba(c.glow,tierIndex<3?.07:.19));
+ glow.addColorStop(1,'rgba(0,0,0,0)');
+ ctx.fillStyle=glow;
+ ctx.beginPath();
+ ctx.arc(x,y,r*(tierIndex<3?2.1:2.48),0,Math.PI*2);
+ ctx.fill();
+
+ let body=ctx.createRadialGradient(x-r*.34,y-r*.4,r*.08,x,y,r*1.15);
+ body.addColorStop(0,c.color1);
+ body.addColorStop(.38,mixColor(c.color1,'#ffffff',tierIndex>=3?.22:0));
+ body.addColorStop(.62,mixColor(c.color1,c.color2,.36));
+ body.addColorStop(1,c.color2);
+ ctx.fillStyle=body;
+ ctx.beginPath();
+ ctx.arc(x,y,r,0,Math.PI*2);
+ ctx.fill();
+
+ if(tierIndex<=2)drawGasBands(x,y,r,rot,tierIndex);
+ else drawStarSurface(x,y,r,rot,tierIndex,c);
+
+ // 주연 감광: 테두리 선이 아니라, 표면 가장자리가 자연스럽게 어두워지는 처리
+ if(tierIndex>=3){
+  const limb=ctx.createRadialGradient(x,y,r*.25,x,y,r*1.02);
+  limb.addColorStop(0,'rgba(0,0,0,0)');
+  limb.addColorStop(.58,'rgba(0,0,0,0)');
+  limb.addColorStop(.86,'rgba(0,0,0,.12)');
+  limb.addColorStop(1,'rgba(0,0,0,.32)');
+  ctx.fillStyle=limb;
+  ctx.beginPath();
+  ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.save();
+  ctx.globalCompositeOperation='screen';
+  const softEdge=ctx.createRadialGradient(x,y,r*.90,x,y,r*1.22);
+  softEdge.addColorStop(0,'rgba(255,255,255,0)');
+  softEdge.addColorStop(.52,hexToRgba(c.color1,.10));
+  softEdge.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=softEdge;
+  ctx.beginPath();
+  ctx.arc(x,y,r*1.22,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+ }
+
+ ctx.strokeStyle=tierIndex>=3?'rgba(255,255,255,.18)':'rgba(255,255,255,.34)';
+ ctx.lineWidth=Math.max(1,r*.018);
+ ctx.beginPath();
+ ctx.arc(x,y,r,0,Math.PI*2);
+ ctx.stroke();
+
+ ctx.fillStyle=tierIndex>=7?'#0f172a':'rgba(255,255,255,.94)';
+ ctx.font=`900 ${Math.max(10,r*.36)}px system-ui`;
+ ctx.textAlign='center';
+ ctx.textBaseline='middle';
+ ctx.fillText(t.short,x,y+r*.02);
+ ctx.textAlign='left';
+ ctx.textBaseline='alphabetic';
+ ctx.restore()
+}
 function drawGasBands(x,y,r,rot,tier){ctx.save();ctx.beginPath();ctx.arc(x,y,r*.98,0,Math.PI*2);ctx.clip();ctx.translate(x,y);ctx.rotate(Math.sin(rot)*.1);let bands=tier===2?['rgba(255,255,255,.14)','rgba(124,45,18,.32)','rgba(253,186,116,.18)']:['rgba(255,255,255,.22)','rgba(146,64,14,.23)','rgba(251,191,36,.18)'];for(let i=-4;i<=4;i++){ctx.fillStyle=bands[(i+6)%bands.length];ctx.beginPath();ctx.ellipse(0,i*r*.23+Math.sin(rot+i)*2,r*1.05,r*.07,0,0,Math.PI*2);ctx.fill()}ctx.restore()}
 function drawStarSurface(x,y,r,rot,tier,c=null){ctx.save();ctx.beginPath();ctx.arc(x,y,r*.98,0,Math.PI*2);ctx.clip();let n=Math.min(12,4+tier),flare=(c&&c.glow)||'rgba(255,255,255,1)';for(let i=0;i<n;i++){let a=rot+i*Math.PI*2/n,px=x+Math.cos(a*1.7)*r*.38,py=y+Math.sin(a*1.2)*r*.38,grd=ctx.createRadialGradient(px,py,0,px,py,r*.44);grd.addColorStop(0,c?hexToRgba(flare,.22):'rgba(255,255,255,.30)');grd.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=grd;ctx.beginPath();ctx.arc(px,py,r*.45,0,Math.PI*2);ctx.fill()}ctx.restore()}
 function drawShockwaves(){for(const s of state.shockwaves){let a=clamp(s.life/.7,0,1);ctx.strokeStyle=hexToRgba(s.color,.55*a);ctx.lineWidth=5*a;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.stroke()}}
