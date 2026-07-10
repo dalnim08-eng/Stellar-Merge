@@ -591,12 +591,48 @@ canvas{touch-action:none}
   .missionActions button{width:100%}
 }
 
+
+/* in-game navigation */
+#gameMenuBtn{
+  position:absolute;
+  left:14px;
+  bottom:14px;
+  z-index:16;
+  margin:0;
+  min-width:88px;
+  padding:10px 15px;
+  border:1px solid rgba(148,163,184,.32);
+  background:rgba(7,12,27,.88);
+  color:#eef5ff;
+  box-shadow:0 10px 28px rgba(0,0,0,.34);
+  backdrop-filter:blur(10px);
+}
+#gameMenuBtn:hover{filter:brightness(1.12)}
+.endActions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+.endActions button{margin:0}
+@media(max-width:900px){
+  #gameMenuBtn{
+    left:auto;
+    right:10px;
+    bottom:calc(76px + env(safe-area-inset-bottom));
+    min-width:76px;
+    padding:9px 12px;
+    font-size:13px;
+  }
+}
+
 </style>
 </head>
 <body>
 <canvas id="game"></canvas>
 <div id="hud" class="topbar hidden"><div class="chip">점수 <strong id="score">0</strong></div><div class="chip">최고 단계 <strong id="best">암석행성</strong></div><div class="chip">콤보 <strong id="combo">0</strong></div><div class="chip">위험도 <strong id="danger">0</strong>%</div><div class="chip">난이도 <strong id="difficultyName">보통</strong></div><div id="spaceTimeChip" class="chip hidden">남은 시간 <strong id="spaceTime">03:00</strong></div><div id="spacePointsChip" class="chip hidden">질량 점수 <strong id="spacePoints">0 / 14</strong></div><div id="spaceNovaChip" class="chip hidden">초신성 <strong id="spaceNovaCount">0</strong></div><div id="spaceExpansionChip" class="chip hidden">공간 팽창 <strong id="spaceExpansionValue">0%</strong></div></div>
-<aside id="infoPanel" class="side hidden"><h1>Stellar Merge</h1><p>천체를 융합해 더 무거운 별을 탄생시키십시오. 항성장은 현재 흐름에 맞는 재료를 공급하고, 별은 늙고, 부풀고, 폭발합니다.</p><div class="previewRow"><div class="preview"><small>현재 투하체</small><strong id="currentName">암석행성</strong><div class="bar"><div id="fuelBar"></div></div></div><div class="preview"><small>다음 투하체</small><strong id="nextName">미니 해왕성</strong><div class="bar"><div id="overBar"></div></div></div></div><div class="keys"><div class="key">마우스 이동: 위치 조절</div><div class="key">클릭 / Space: 떨어뜨리기</div><div class="key">A · D: 좌우 이동</div><div class="key">E: 연료로 1단계 점화</div><div class="key">P: 일시정지</div><div class="key">R: 재시작</div></div></aside>
+<aside id="infoPanel" class="side hidden"><h1>Stellar Merge</h1><p>천체를 융합해 더 무거운 별을 탄생시키십시오. 항성장은 현재 흐름에 맞는 재료를 공급하고, 별은 늙고, 부풀고, 폭발합니다.</p><div class="previewRow"><div class="preview"><small>현재 투하체</small><strong id="currentName">암석행성</strong><div class="bar"><div id="fuelBar"></div></div></div><div class="preview"><small>다음 투하체</small><strong id="nextName">미니 해왕성</strong><div class="bar"><div id="overBar"></div></div></div></div><div class="keys"><div class="key">마우스 이동: 위치 조절</div><div class="key">클릭 / Space: 떨어뜨리기</div><div class="key">A · D: 좌우 이동</div><div class="key">E: 연료로 1단계 점화</div><div class="key">P: 일시정지</div></div></aside>
 <div id="mainMenuCard" class="center menuScreen">
   <h2 class="mainTitle">Stellar Merge</h2>
   <div class="menuBar">
@@ -638,7 +674,7 @@ canvas{touch-action:none}
   <div class="missionRules">
     <div class="missionRule"><strong>고질량 항성:</strong> A형·B형·O형을 만들면 단계에 따라 질량 점수를 얻습니다.</div>
     <div class="missionRule"><strong>초신성 연쇄:</strong> 핵붕괴·Ia형·O형 병합 초신성은 큰 보너스를 주며, 폭발 뒤에도 경기가 계속됩니다.</div>
-    <div class="missionRule"><strong>팽창과 중력:</strong> 통은 선형적으로 커지고 천체들은 서로 아주 약하게 끌어당깁니다. 낙하 속도는 일반 모드와 비슷합니다.</div>
+    <div class="missionRule"><strong>팽창과 중력:</strong> 통은 초반에는 완만하지만 종료가 가까워질수록 급격히 커집니다. 높은 난이도일수록 팽창이 더 빠르고 천체들은 서로 아주 약하게 끌어당깁니다.</div>
     <div class="missionRule"><strong>한계선:</strong> 공간을 과도하게 채우면 즉시 종료되지 않지만 질량 점수가 감소합니다.</div>
   </div>
   <div class="missionActions">
@@ -654,13 +690,14 @@ canvas{touch-action:none}
     <div class="settingRow"><strong>효과음</strong><button id="soundToggle" class="secondaryBtn">켜짐</button></div>
     <div class="settingRow"><strong>조작</strong><span>마우스 · 터치 · 키보드 지원</span></div>
     <div class="settingRow"><strong>일시정지</strong><span>P 키</span></div>
-    <div class="settingRow"><strong>재시작</strong><span>R 키</span></div>
+    
   </div>
   <div class="menuBar">
     <button id="settingsBackBtn">메뉴로 돌아가기</button>
   </div>
 </div>
-<div id="endCard" class="center hidden"><h2 id="endTitle">결말</h2><p id="endText"></p><div id="endRoute" class="route"></div><button id="restartBtn">다시 시작</button></div>
+<div id="endCard" class="center hidden"><h2 id="endTitle">결말</h2><p id="endText"></p><div id="endRoute" class="route"></div><div class="endActions"><button id="restartBtn">다시 시작</button><button id="endMenuBtn" class="secondaryBtn">메뉴로 돌아가기</button></div></div>
+<button id="gameMenuBtn" class="hidden">메뉴</button>
 <div id="touchControls" class="touchControls hidden"><div class="touchGroup"><div id="leftBtn" class="touchBtn">◀</div><div id="rightBtn" class="touchBtn">▶</div></div><div class="touchGroup"><div id="igniteBtn" class="touchBtn gold">점화</div><div id="dropBtn" class="touchBtn hot">투하</div></div></div>
 <script>
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
@@ -668,7 +705,7 @@ const MENU_BG_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABogAAAOtCAIAAAA
 const MENU_STAR_NX=0.18480861,MENU_STAR_NY=0.24973433;
 const menuBgImg=new Image();menuBgImg.src=MENU_BG_SRC;menuBgImg.onload=()=>draw();
 
-const ui={score:gid('score'),best:gid('best'),combo:gid('combo'),danger:gid('danger'),difficultyName:gid('difficultyName'),difficultyTitle:gid('difficultyTitle'),diffNote:gid('diffNote'),currentName:gid('currentName'),nextName:gid('nextName'),fuelBar:gid('fuelBar'),overBar:gid('overBar'),hud:gid('hud'),infoPanel:gid('infoPanel'),touchControls:gid('touchControls'),mainMenuCard:gid('mainMenuCard'),difficultyCard:gid('difficultyCard'),spaceIntroCard:gid('spaceIntroCard'),settingsCard:gid('settingsCard'),startCard:gid('difficultyCard'),endCard:gid('endCard'),endTitle:gid('endTitle'),endText:gid('endText'),endRoute:gid('endRoute'),spaceTimeChip:gid('spaceTimeChip'),spacePointsChip:gid('spacePointsChip'),spaceNovaChip:gid('spaceNovaChip'),spaceExpansionChip:gid('spaceExpansionChip'),spaceTime:gid('spaceTime'),spacePoints:gid('spacePoints'),spaceNovaCount:gid('spaceNovaCount'),spaceExpansionValue:gid('spaceExpansionValue'),missionTime:gid('missionTime'),missionTarget:gid('missionTarget'),missionDifficulty:gid('missionDifficulty')};function gid(id){return document.getElementById(id)}
+const ui={score:gid('score'),best:gid('best'),combo:gid('combo'),danger:gid('danger'),difficultyName:gid('difficultyName'),difficultyTitle:gid('difficultyTitle'),diffNote:gid('diffNote'),currentName:gid('currentName'),nextName:gid('nextName'),fuelBar:gid('fuelBar'),overBar:gid('overBar'),hud:gid('hud'),infoPanel:gid('infoPanel'),touchControls:gid('touchControls'),mainMenuCard:gid('mainMenuCard'),difficultyCard:gid('difficultyCard'),spaceIntroCard:gid('spaceIntroCard'),settingsCard:gid('settingsCard'),startCard:gid('difficultyCard'),endCard:gid('endCard'),endTitle:gid('endTitle'),endText:gid('endText'),endRoute:gid('endRoute'),spaceTimeChip:gid('spaceTimeChip'),spacePointsChip:gid('spacePointsChip'),spaceNovaChip:gid('spaceNovaChip'),spaceExpansionChip:gid('spaceExpansionChip'),spaceTime:gid('spaceTime'),spacePoints:gid('spacePoints'),spaceNovaCount:gid('spaceNovaCount'),spaceExpansionValue:gid('spaceExpansionValue'),missionTime:gid('missionTime'),missionTarget:gid('missionTarget'),missionDifficulty:gid('missionDifficulty'),gameMenuBtn:gid('gameMenuBtn'),endMenuBtn:gid('endMenuBtn')};function gid(id){return document.getElementById(id)}
 const TIERS=[
 {name:'암석행성',short:'R',r:11,color1:'#e7e5e4',color2:'#57534e',glow:'#a8a29e',score:3,density:1.30},
 {name:'미니 해왕성',short:'MN',r:15,color1:'#bae6fd',color2:'#075985',glow:'#38bdf8',score:6,density:.92},
@@ -740,6 +777,14 @@ const SPACE_CHALLENGES={
 function difficulty(){return DIFFICULTIES[state.difficultyKey]||DIFFICULTIES.normal}
 function getEvoRule(tier){const d=difficulty();if(d.noEvolution)return{mode:'stable'};return d.evo[tier]||{mode:'stable'}}
 function spaceChallenge(){return SPACE_CHALLENGES[state.difficultyKey]||SPACE_CHALLENGES.normal}
+function spaceExpansionProfile(){return SPACE_EXPANSION_PROFILES[state.difficultyKey]||SPACE_EXPANSION_PROFILES.normal}
+function exponentialExpansionProgress(elapsed,total){
+ const profile=spaceExpansionProfile();
+ const u=clamp(total>0?elapsed/total:0,0,1);
+ const k=Math.max(.01,profile.exponent||3);
+ const curve=Math.expm1(k*u)/Math.expm1(k);
+ return clamp(curve*(profile.maxProgress??1),0,1);
+}
 function formatClock(seconds){const n=Math.max(0,Math.ceil(seconds)),m=Math.floor(n/60),s=n%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
 function refreshSpaceIntro(){const d=difficulty(),c=spaceChallenge();if(ui.missionTime)ui.missionTime.textContent=formatClock(c.time);if(ui.missionTarget)ui.missionTarget.textContent=c.target+'점';if(ui.missionDifficulty)ui.missionDifficulty.textContent=d.label}
 function recordSpaceHighMass(tier,x,y){
@@ -772,12 +817,29 @@ function finishSpaceChallenge(){
  const a=state.spaceHighMassByTier[9]||0,b=state.spaceHighMassByTier[10]||0,o=state.spaceHighMassByTier[11]||0;
  const title=success?`우주 모드 성공 ${'★'.repeat(stars)}`:'우주 모드 임무 실패';
  const text=`질량 점수 ${points}점 / 목표 ${target}점 · 고질량 항성 ${state.spaceHighMassCount}개 · 초신성 ${state.spaceSupernovaCount}회`;
- const route=success?`A형 ${a}개, B형 ${b}개, O형 ${o}개를 만들었습니다. 팽창하는 공간 안에서 초신성 연쇄를 유지하는 데 성공했습니다.`:`A형 ${a}개, B형 ${b}개, O형 ${o}개를 만들었습니다. 더 높은 질량의 공급을 빠르게 묶고 초신성 이후 남은 공간을 즉시 재사용해야 합니다.`;
+ let route;
+ if(success){
+  route=state.spaceSupernovaCount>0
+   ?`A형 ${a}개, B형 ${b}개, O형 ${o}개를 만들고 초신성 ${state.spaceSupernovaCount}회를 일으켜 초신성 연쇄에 성공했습니다.`
+   :`A형 ${a}개, B형 ${b}개, O형 ${o}개를 만들어 목표 질량 점수를 달성했습니다. 이번 작전에서는 초신성 폭발이 발생하지 않았습니다.`;
+ }else{
+  route=state.spaceSupernovaCount>0
+   ?`A형 ${a}개, B형 ${b}개, O형 ${o}개와 초신성 ${state.spaceSupernovaCount}회를 기록했습니다. 더 많은 고질량 항성과 폭발을 연결해 목표 점수를 확보해야 합니다.`
+   :`A형 ${a}개, B형 ${b}개, O형 ${o}개를 만들었습니다. 고질량 항성을 더 빠르게 성장시키고 초신성까지 연결해야 합니다.`;
+ }
  state.nebulaEffect={x:state.box.x+state.box.w/2,y:state.box.y+state.box.h*.38,t:0,d:1.15};
  setTimeout(()=>{showEnding(title,text,route);state.running=false;draw()},850);
 }
 
-const STANDARD_BOX_W=500,STANDARD_BOX_H=680,SPACE_START_W=570,SPACE_START_H=740,SPACE_WORLD_W=730,SPACE_WORLD_H=880;
+const STANDARD_BOX_W=500,STANDARD_BOX_H=680,SPACE_START_W=570,SPACE_START_H=740,SPACE_WORLD_W=840,SPACE_WORLD_H=960;
+const SPACE_EXPANSION_PROFILES={
+ crazy:{exponent:4.0,maxProgress:1.00},
+ hard:{exponent:3.6,maxProgress:.94},
+ normal:{exponent:3.2,maxProgress:.88},
+ easy:{exponent:2.8,maxProgress:.80},
+ relaxed:{exponent:2.4,maxProgress:.72},
+ very_easy:{exponent:2.0,maxProgress:.64}
+};
 const state={running:false,paused:false,ending:false,difficultyKey:'normal',gameMode:'standard',spaceExpansion:0,spaceTimeLimit:180,spaceTarget:14,spacePoints:0,spaceHighMassCount:0,spaceSupernovaCount:0,spaceFinished:false,spaceHighMassByTier:{9:0,10:0,11:0},menuTime:0,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,dropX:0,lastDropX:null,sameDropStreak:0,dropHeld:false,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,box:{x:0,y:0,w:0,h:0,dangerY:0},gameScale:1,gameOffsetX:0,gameOffsetY:0,bodies:[],particles:[],shockwaves:[],stars:[],keys:new Set(),supernova:null,nebulaEffect:null,audioReady:false,audioCtx:null,soundOn:true};let last=performance.now(),nextId=1;
 function isSpaceMode(){return state.gameMode==='space'}
 function worldGravity(){return isSpaceMode()?860:940}
@@ -793,14 +855,16 @@ function getSpaceBoxGeometry(progress=state.spaceExpansion||0){
 }
 function updateSpaceExpansion(){
  if(!isSpaceMode())return;
- const expansionSeconds=Math.max(80,Math.min(125,state.spaceTimeLimit*.66));
- const next=clamp(state.time/expansionSeconds,0,1);
+ const next=exponentialExpansionProgress(state.time,state.spaceTimeLimit);
  if(next<=state.spaceExpansion+1e-7)return;
  const old={...state.box},neu=getSpaceBoxGeometry(next);
  const ocx=old.x+old.w/2,ocy=old.y+old.h/2,ncx=neu.x+neu.w/2,ncy=neu.y+neu.h/2;
  const sx=old.w>0?neu.w/old.w:1,sy=old.h>0?neu.h/old.h:1;
  const bodySx=1+(sx-1)*.62,bodySy=1+(sy-1)*.62;
- for(const b of state.bodies){b.x=ncx+(b.x-ocx)*bodySx;b.y=ncy+(b.y-ocy)*bodySy}
+ for(const b of state.bodies){
+  b.x=ncx+(b.x-ocx)*bodySx;
+  b.y=ncy+(b.y-ocy)*bodySy;
+ }
  state.dropX=ncx+(state.dropX-ocx)*(1+(sx-1)*.82);
  state.spaceExpansion=next;
  state.box=neu;
@@ -835,7 +899,16 @@ function reset(){
  const challenge=spaceChallenge(),space=isSpaceMode(),startTier=space?2:0,nextTier=space?3:1;
  Object.assign(state,{running:true,paused:false,ending:false,spaceExpansion:0,spaceTimeLimit:challenge.time,spaceTarget:challenge.target,spacePoints:0,spaceHighMassCount:0,spaceSupernovaCount:0,spaceFinished:false,spaceHighMassByTier:{9:0,10:0,11:0},score:0,combo:0,fuel:0,bestTier:startTier,currentTier:startTier,nextTier,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,bodies:[],particles:[],shockwaves:[],supernova:null,nebulaEffect:null,lastDropX:null,sameDropStreak:0,dropHeld:false});
  resize();state.dropX=state.box.x+state.box.w/2;
- ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.add('hidden');ui.spaceIntroCard.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.endCard.classList.add('hidden');ui.hud.classList.remove('hidden');ui.infoPanel.classList.remove('hidden');ui.touchControls.classList.remove('hidden');updateUI();last=performance.now();requestAnimationFrame(loop)
+ ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.add('hidden');ui.spaceIntroCard.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.endCard.classList.add('hidden');ui.hud.classList.remove('hidden');ui.infoPanel.classList.remove('hidden');ui.touchControls.classList.remove('hidden');if(ui.gameMenuBtn)ui.gameMenuBtn.classList.remove('hidden');updateUI();last=performance.now();requestAnimationFrame(loop)
+}
+function returnToMainMenu(){
+ state.running=false;state.paused=false;state.ending=false;state.dropHeld=false;state.spaceFinished=false;
+ state.keys.clear();state.bodies=[];state.particles=[];state.shockwaves=[];state.supernova=null;state.nebulaEffect=null;state.overfill=0;
+ ui.hud.classList.add('hidden');ui.infoPanel.classList.add('hidden');ui.touchControls.classList.add('hidden');
+ if(ui.gameMenuBtn)ui.gameMenuBtn.classList.add('hidden');
+ ui.difficultyCard.classList.add('hidden');ui.spaceIntroCard.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.endCard.classList.add('hidden');
+ ui.mainMenuCard.classList.remove('hidden');
+ state.menuTime=0;resize();updateUI();draw();
 }
 function loop(now){if(!state.running)return;let dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;if(!state.paused){if(state.ending){state.time+=dt;updateEffects(dt);updateEndingEffects(dt)}else update(dt)}draw();requestAnimationFrame(loop)}
 function update(dt){
@@ -1084,8 +1157,23 @@ function randomDropTier(){
 function igniteCurrent(){
  if(!state.running||state.paused||state.ending)return;
  if(state.fuel<100){popText(state.dropX,state.box.y+54,'에너지 부족','#93c5fd');soundBlip(160,.06,'triangle',.04);return}
- if(state.currentTier>=Math.min(TIERS.length-2,state.bestTier+1)){popText(state.dropX,state.box.y+54,'점화 조건 미달','#fbbf24');return}
- state.currentTier++;state.fuel=0;state.bestTier=Math.max(state.bestTier,state.currentTier);recordSpaceHighMass(state.currentTier,state.dropX,state.box.y+42);burst(state.dropX,state.box.y+36,18,TIERS[state.currentTier].glow,.4,120);soundIgnite();updateUI()
+ const maxIgnitableTier=Math.min(TIERS.length-2,state.bestTier+1);
+ if(state.currentTier>=maxIgnitableTier){popText(state.dropX,state.box.y+54,'점화 조건 미달','#fbbf24');return}
+
+ // 점화는 투하 대기 중인 천체만 한 단계 올려야 한다.
+ // 필드에 놓인 천체 배열을 별도로 보존해 점화 입력이 기존 행성을 제거하거나 교체하지 못하게 한다.
+ const preservedBodies=state.bodies.slice();
+ const nextTier=state.currentTier+1;
+ if(!TIERS[nextTier])return;
+ state.currentTier=nextTier;
+ state.fuel=0;
+ state.bestTier=Math.max(state.bestTier,state.currentTier);
+ state.bodies=preservedBodies;
+
+ recordSpaceHighMass(state.currentTier,state.dropX,state.box.y+42);
+ burst(state.dropX,state.box.y+36,18,TIERS[state.currentTier].glow,.4,120);
+ soundIgnite();
+ updateUI()
 }
 
 function giantScaleCap(tier){
@@ -1359,7 +1447,7 @@ function triggerSupernova(x,y,source='merge'){
  }
  state.ending=true;state.score+=source==='merge'?50000:source==='ia'?26000:32000;if(source==='merge')state.bestTier=TIERS.length-1;state.bodies=[];state.shake=source==='ia'?42:34;state.supernova={x,y,t:0,d:source==='ia'?2.35:2.8,kind:source};burst(x,y,source==='ia'?620:520,'#ffffff',source==='ia'?2.4:2.7,source==='ia'?820:720);burst(x,y,source==='ia'?470:360,'#60a5fa',source==='ia'?2.6:3.0,source==='ia'?690:610);burst(x,y,source==='ia'?160:300,'#fb7185',2.6,540);burst(x,y,source==='ia'?260:230,'#fbbf24',2.4,500);shockwave(x,y,12,Math.max(innerWidth,innerHeight)*1.15,'#ffffff');shockwave(x,y,32,Math.max(innerWidth,innerHeight)*.72,'#60a5fa');soundSupernova();setTimeout(()=>{let title,text,route;if(source==='merge'){title='초신성 엔딩';text=`O형 주계열성 두 개가 병합되어 거대한 폭발을 일으켰습니다. 최종 점수는 ${state.score}점입니다.`;route='암석행성과 미니 해왕성에서 시작한 천체들이 고질량 주계열성으로 성장했고, 마지막 충돌은 우주를 가르는 초신성으로 이어졌습니다.'}else if(source==='ia'){title='Ia형 초신성 엔딩';text=`백색왜성 병합 질량이 한계를 넘어 열핵 폭발을 일으켰습니다. 최종 점수는 ${state.score}점입니다.`;route='식어가던 별의 잔해들이 한계를 넘어섰습니다. 조용한 백색왜성은 다시 눈부신 열핵 폭발로 타올랐습니다.'}else{title='핵붕괴 초신성 엔딩';text=`고질량 주계열성이 수명을 다해 핵붕괴 초신성으로 폭발했습니다. 최종 점수는 ${state.score}점입니다.`;route='고질량 별의 중심핵이 버티지 못하고 무너졌습니다. 남은 것은 초신성의 빛과 극도로 밀집된 잔해뿐입니다.'}showEnding(title,text,route);state.running=false;draw()},source==='ia'?2350:2800)
 }
-function showEnding(title,text,route){ui.endTitle.textContent=title;ui.endText.textContent=text;ui.endRoute.textContent=route;ui.touchControls.classList.add('hidden');ui.endCard.classList.remove('hidden');updateUI()}
+function showEnding(title,text,route){ui.endTitle.textContent=title;ui.endText.textContent=text;ui.endRoute.textContent=route;ui.touchControls.classList.add('hidden');if(ui.gameMenuBtn)ui.gameMenuBtn.classList.add('hidden');ui.endCard.classList.remove('hidden');updateUI()}
 function updateEffects(dt){for(const p of state.particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.992;p.vy*=.992;p.life-=dt;p.size*=.992}state.particles=state.particles.filter(p=>p.life>0&&p.size>.1);for(const s of state.shockwaves){s.r+=s.speed*dt;s.life-=dt}state.shockwaves=state.shockwaves.filter(s=>s.life>0);if(state.shake>0){state.shake*=.88;if(state.shake<.25)state.shake=0}}
 function updateEndingEffects(dt){
  if(state.supernova){state.supernova.t+=dt;if(isSpaceMode()&&state.supernova.t>state.supernova.d)state.supernova=null}
@@ -1870,7 +1958,7 @@ function setDifficulty(key){
  refreshSpaceIntro();updateUI();
 }
 window.addEventListener('resize',resize);if(window.visualViewport)visualViewport.addEventListener('resize',resize);window.addEventListener('mousemove',e=>{state.dropX=clamp(screenToGameX(e.clientX),state.box.x+28,state.box.x+state.box.w-28)});canvas.addEventListener('click',dropCurrent);canvas.addEventListener('touchmove',e=>{let t=e.touches[0];if(t)state.dropX=clamp(screenToGameX(t.clientX),state.box.x+28,state.box.x+state.box.w-28);e.preventDefault()},{passive:false});canvas.addEventListener('touchstart',e=>{let t=e.touches[0];if(t)state.dropX=clamp(screenToGameX(t.clientX),state.box.x+28,state.box.x+state.box.w-28);e.preventDefault()},{passive:false});
-window.addEventListener('keydown',e=>{state.keys.add(e.key);if(e.key===' '||e.code==='Space'){e.preventDefault();if(!state.dropHeld){state.dropHeld=true;dropCurrent()}}if(e.key==='e'||e.key==='E')igniteCurrent();if(e.key==='p'||e.key==='P'){if(state.running)state.paused=!state.paused}if(e.key==='r'||e.key==='R'){if(state.running)reset()}if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault()},{passive:false});window.addEventListener('keyup',e=>{state.keys.delete(e.key);if(e.key===' '||e.code==='Space')state.dropHeld=false});window.addEventListener('blur',()=>{state.dropHeld=false;state.keys.delete(' ')});document.addEventListener('visibilitychange',()=>{if(document.hidden)state.dropHeld=false});document.querySelectorAll('.diffBtn').forEach(btn=>btn.addEventListener('click',()=>setDifficulty(btn.dataset.diff)));
+window.addEventListener('keydown',e=>{state.keys.add(e.key);if(e.key===' '||e.code==='Space'){e.preventDefault();if(!state.dropHeld){state.dropHeld=true;dropCurrent()}}if(e.code==='KeyE'||e.key==='e'||e.key==='E'){e.preventDefault();if(!e.repeat)igniteCurrent()}if(e.key==='p'||e.key==='P'){if(state.running)state.paused=!state.paused}if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault()},{passive:false});window.addEventListener('keyup',e=>{state.keys.delete(e.key);if(e.key===' '||e.code==='Space')state.dropHeld=false});window.addEventListener('blur',()=>{state.dropHeld=false;state.keys.delete(' ')});document.addEventListener('visibilitychange',()=>{if(document.hidden)state.dropHeld=false});document.querySelectorAll('.diffBtn').forEach(btn=>btn.addEventListener('click',()=>setDifficulty(btn.dataset.diff)));
 function openSpaceIntro(){
  state.gameMode='space';refreshSpaceIntro();ui.touchControls.classList.add('hidden');ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.add('hidden');ui.spaceIntroCard.classList.remove('hidden');resize();updateUI();
 }
@@ -1886,10 +1974,10 @@ gid('difficultyBackBtn').addEventListener('click',()=>{ui.touchControls.classLis
 gid('settingsBtn').addEventListener('click',()=>{ui.touchControls.classList.add('hidden');ui.mainMenuCard.classList.add('hidden');ui.spaceIntroCard.classList.add('hidden');ui.settingsCard.classList.remove('hidden')});
 gid('settingsBackBtn').addEventListener('click',()=>{ui.touchControls.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.mainMenuCard.classList.remove('hidden')});
 gid('soundToggle').addEventListener('click',()=>{state.soundOn=!state.soundOn;gid('soundToggle').textContent=state.soundOn?'켜짐':'꺼짐'});
-gid('startBtn').addEventListener('click',()=>{unlockAudio();if(isSpaceMode())openSpaceIntro();else reset()});gid('spaceIntroBackBtn').addEventListener('click',()=>{ui.spaceIntroCard.classList.add('hidden');ui.difficultyCard.classList.remove('hidden');setDifficulty(state.difficultyKey)});gid('spaceIntroStartBtn').addEventListener('click',()=>{unlockAudio();reset()});gid('restartBtn').addEventListener('click',()=>{unlockAudio();reset()});const dropBtn=gid('dropBtn');dropBtn.addEventListener('pointerdown',e=>{state.dropHeld=true;dropCurrent();try{dropBtn.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault()});const stopDropHold=()=>{state.dropHeld=false};dropBtn.addEventListener('pointerup',stopDropHold);dropBtn.addEventListener('pointercancel',stopDropHold);dropBtn.addEventListener('lostpointercapture',stopDropHold);gid('igniteBtn').addEventListener('pointerdown',e=>{igniteCurrent();e.preventDefault()});const leftBtn=gid('leftBtn'),rightBtn=gid('rightBtn');leftBtn.addEventListener('pointerdown',e=>{state.keys.add('a');e.preventDefault()});leftBtn.addEventListener('pointerup',()=>state.keys.delete('a'));leftBtn.addEventListener('pointerleave',()=>state.keys.delete('a'));leftBtn.addEventListener('pointercancel',()=>state.keys.delete('a'));rightBtn.addEventListener('pointerdown',e=>{state.keys.add('d');e.preventDefault()});rightBtn.addEventListener('pointerup',()=>state.keys.delete('d'));rightBtn.addEventListener('pointerleave',()=>state.keys.delete('d'));rightBtn.addEventListener('pointercancel',()=>state.keys.delete('d'));
+gid('startBtn').addEventListener('click',()=>{unlockAudio();if(isSpaceMode())openSpaceIntro();else reset()});gid('spaceIntroBackBtn').addEventListener('click',()=>{ui.spaceIntroCard.classList.add('hidden');ui.difficultyCard.classList.remove('hidden');setDifficulty(state.difficultyKey)});gid('spaceIntroStartBtn').addEventListener('click',()=>{unlockAudio();reset()});gid('restartBtn').addEventListener('click',()=>{unlockAudio();reset()});gid('gameMenuBtn').addEventListener('click',returnToMainMenu);gid('endMenuBtn').addEventListener('click',returnToMainMenu);const dropBtn=gid('dropBtn');dropBtn.addEventListener('pointerdown',e=>{state.dropHeld=true;dropCurrent();try{dropBtn.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault()});const stopDropHold=()=>{state.dropHeld=false};dropBtn.addEventListener('pointerup',stopDropHold);dropBtn.addEventListener('pointercancel',stopDropHold);dropBtn.addEventListener('lostpointercapture',stopDropHold);gid('igniteBtn').addEventListener('pointerdown',e=>{igniteCurrent();e.preventDefault()});const leftBtn=gid('leftBtn'),rightBtn=gid('rightBtn');leftBtn.addEventListener('pointerdown',e=>{state.keys.add('a');e.preventDefault()});leftBtn.addEventListener('pointerup',()=>state.keys.delete('a'));leftBtn.addEventListener('pointerleave',()=>state.keys.delete('a'));leftBtn.addEventListener('pointercancel',()=>state.keys.delete('a'));rightBtn.addEventListener('pointerdown',e=>{state.keys.add('d');e.preventDefault()});rightBtn.addEventListener('pointerup',()=>state.keys.delete('d'));rightBtn.addEventListener('pointerleave',()=>state.keys.delete('d'));rightBtn.addEventListener('pointercancel',()=>state.keys.delete('d'));
 resize();setDifficulty('normal');updateUI();startIdleMenuLoop();draw();
 function startIdleMenuLoop(){let prev=performance.now();function tick(now){let dt=Math.min(.033,Math.max(0,(now-prev)/1000));prev=now;if(!state.running){state.menuTime=Math.min(70,(state.menuTime||0)+dt);draw()}requestAnimationFrame(tick)}requestAnimationFrame(tick)}
 </script>
-<!-- Physics revision: rolling/sliding contacts, column buckling, K/M evolution timer visibility, giant-body wobble, inherited giant-core evolution timers, rocky/mini-Neptune tiers, stationary-repeat low-tier supply, crazy/hard brown-dwarf cooling contraction, outside next-object preview, Ia best-tier fix, bounded space expansion and weak mass gravity, subtle menu-title glow, all-difficulty spawn rebalance, timed expanding-space challenge, high-mass scoring and repeatable supernovae, standard-mode difficulty-scaled limit line -->
+<!-- Physics revision: rolling/sliding contacts, column buckling, K/M evolution timer visibility, giant-body wobble, inherited giant-core evolution timers, rocky/mini-Neptune tiers, stationary-repeat low-tier supply, crazy/hard brown-dwarf cooling contraction, outside next-object preview, Ia best-tier fix, bounded space expansion and weak mass gravity, subtle menu-title glow, all-difficulty spawn rebalance, timed expanding-space challenge, high-mass scoring and repeatable supernovae, standard-mode difficulty-scaled limit line, in-game menu return, supernova-result gating, difficulty-scaled exponential space expansion, R-key restart removal -->
 </body>
 </html>
