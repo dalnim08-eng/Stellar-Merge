@@ -539,6 +539,20 @@ canvas{touch-action:none}
   .side{display:none!important}
 }
 
+
+/* subtle breathing glow for the main title */
+@keyframes stellarTitleSoftGlow{
+  0%,100%{filter:brightness(.98) drop-shadow(0 0 5px rgba(226,232,240,.16)) drop-shadow(0 0 16px rgba(103,232,249,.09))}
+  50%{filter:brightness(1.055) drop-shadow(0 0 9px rgba(248,250,252,.24)) drop-shadow(0 0 28px rgba(125,211,252,.15))}
+}
+#mainMenuCard .mainTitle{
+  animation:stellarTitleSoftGlow 5.2s ease-in-out infinite;
+  will-change:filter;
+}
+@media(prefers-reduced-motion:reduce){
+  #mainMenuCard .mainTitle{animation:none;filter:brightness(1.02) drop-shadow(0 0 10px rgba(226,232,240,.16))}
+}
+
 </style>
 </head>
 <body>
@@ -549,6 +563,7 @@ canvas{touch-action:none}
   <h2 class="mainTitle">Stellar Merge</h2>
   <div class="menuBar">
     <button id="menuStartBtn">게임 시작</button>
+    <button id="spaceModeBtn">우주 모드</button>
     <button id="settingsBtn" class="secondaryBtn">게임 설정</button>
   </div>
   <p class="tagline"></p>
@@ -556,7 +571,7 @@ canvas{touch-action:none}
 </div>
 
 <div id="difficultyCard" class="center fullScreenCard hidden">
-  <h2>난이도 선택</h2>
+  <h2 id="difficultyTitle">난이도 선택</h2>
   <p>항성 진화의 속도를 선택하십시오. 높은 난이도일수록 별은 더 빨리 늙고, 거성의 맥동은 더 난폭해집니다.</p>
   <div class="diffChooser" id="diffChooser">
     <button class="diffBtn crazy" data-diff="crazy">크레이지</button>
@@ -594,7 +609,7 @@ const MENU_BG_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABogAAAOtCAIAAAA
 const MENU_STAR_NX=0.18480861,MENU_STAR_NY=0.24973433;
 const menuBgImg=new Image();menuBgImg.src=MENU_BG_SRC;menuBgImg.onload=()=>draw();
 
-const ui={score:gid('score'),best:gid('best'),combo:gid('combo'),danger:gid('danger'),difficultyName:gid('difficultyName'),diffNote:gid('diffNote'),currentName:gid('currentName'),nextName:gid('nextName'),fuelBar:gid('fuelBar'),overBar:gid('overBar'),hud:gid('hud'),infoPanel:gid('infoPanel'),touchControls:gid('touchControls'),mainMenuCard:gid('mainMenuCard'),difficultyCard:gid('difficultyCard'),settingsCard:gid('settingsCard'),startCard:gid('difficultyCard'),endCard:gid('endCard'),endTitle:gid('endTitle'),endText:gid('endText'),endRoute:gid('endRoute')};function gid(id){return document.getElementById(id)}
+const ui={score:gid('score'),best:gid('best'),combo:gid('combo'),danger:gid('danger'),difficultyName:gid('difficultyName'),difficultyTitle:gid('difficultyTitle'),diffNote:gid('diffNote'),currentName:gid('currentName'),nextName:gid('nextName'),fuelBar:gid('fuelBar'),overBar:gid('overBar'),hud:gid('hud'),infoPanel:gid('infoPanel'),touchControls:gid('touchControls'),mainMenuCard:gid('mainMenuCard'),difficultyCard:gid('difficultyCard'),settingsCard:gid('settingsCard'),startCard:gid('difficultyCard'),endCard:gid('endCard'),endTitle:gid('endTitle'),endText:gid('endText'),endRoute:gid('endRoute')};function gid(id){return document.getElementById(id)}
 const TIERS=[
 {name:'암석행성',short:'R',r:11,color1:'#e7e5e4',color2:'#57534e',glow:'#a8a29e',score:3,density:1.30},
 {name:'미니 해왕성',short:'MN',r:15,color1:'#bae6fd',color2:'#075985',glow:'#38bdf8',score:6,density:.92},
@@ -611,28 +626,31 @@ const TIERS=[
 ];
 const FIRST_STAR_TIER=5;
 const G_STAR_TIER=7;
+const SUPER_JUPITER_TIER=3;
+const BROWN_DWARF_TIER=4;
 
 function evoRule(mode,total,expand){return{mode,life:total*.64,giant:total*.16,pulse:total*.20,expand}}
+function coolingRule(total,cool){return{mode:'cool_sj',life:Math.max(1,total-cool),cool,total}}
 const DIFFICULTIES={
  crazy:{
   label:'크레이지',
   note:'크레이지: 작은 재료 위주로 버티는 항성장입니다. 항성 진화가 매우 빠르고 고질량성은 오래 유지되지 않습니다.',
   dangerScale:1.78,overLimit:1.88,pulsePhysical:.29,pulseVisual:.34,pulseKick:780,
   spawn:{maxLag:6,maxTier:4,bigBias:.006,fieldBias:.012,neighborBias:.008,highChance:.001},
-  evo:{5:evoRule('wd',94,1.42),6:evoRule('wd',70,1.52),7:evoRule('wd',42,1.78),8:evoRule('wd',31,1.86),9:evoRule('wd',23,1.94),10:evoRule('sn',17,1.66),11:evoRule('sn',12,1.52)}
+  evo:{4:coolingRule(52,12),5:evoRule('wd',94,1.42),6:evoRule('wd',70,1.52),7:evoRule('wd',42,1.78),8:evoRule('wd',31,1.86),9:evoRule('wd',23,1.94),10:evoRule('sn',17,1.66),11:evoRule('sn',12,1.52)}
  },
  hard:{
   label:'어려움',
   note:'어려움: 큰 천체 공급이 드물고, G형 이상 항성이 빠르게 거성화와 열 맥동으로 진입합니다.',
   dangerScale:1.52,overLimit:2.06,pulsePhysical:.23,pulseVisual:.28,pulseKick:630,
   spawn:{maxLag:5,maxTier:4,bigBias:.018,fieldBias:.035,neighborBias:.018,highChance:.004},
-  evo:{5:{mode:'stable'},6:{mode:'stable'},7:evoRule('wd',76,1.72),8:evoRule('wd',56,1.82),9:evoRule('wd',40,1.92),10:evoRule('sn',28,1.62),11:evoRule('sn',20,1.50)}
+  evo:{4:coolingRule(86,18),5:{mode:'stable'},6:{mode:'stable'},7:evoRule('wd',76,1.72),8:evoRule('wd',56,1.82),9:evoRule('wd',40,1.92),10:evoRule('sn',28,1.62),11:evoRule('sn',20,1.50)}
  },
  normal:{
   label:'보통',
   note:'보통: 큰 천체 공급이 제한되며, 항성 진화가 빠르게 진행되는 표준 난이도입니다.',
   dangerScale:1.18,overLimit:2.58,pulsePhysical:.17,pulseVisual:.23,pulseKick:430,
-  spawn:{maxLag:4,maxTier:5,bigBias:.050,fieldBias:.095,neighborBias:.045,highChance:.016},
+  spawn:{maxLag:3,maxTier:5,minCap:2,bigBias:.065,fieldBias:.095,neighborBias:.045,highChance:.016,tierWeights:[.65,.82,1.25,1.10,1.05,1],antiIdleGrace:3,antiIdleRamp:10,antiIdleBase:.08,antiIdleGain:.72,antiIdleMax:.88,holdBonus:.06,rockyBase:.56,rockyGain:.18},
   evo:{5:{mode:'stable'},6:{mode:'stable'},7:evoRule('wd',148,1.68),8:evoRule('wd',108,1.78),9:evoRule('wd',78,1.86),10:evoRule('sn',54,1.56),11:evoRule('sn',40,1.46)}
  },
  easy:{
@@ -659,7 +677,30 @@ const DIFFICULTIES={
 };
 function difficulty(){return DIFFICULTIES[state.difficultyKey]||DIFFICULTIES.normal}
 function getEvoRule(tier){const d=difficulty();if(d.noEvolution)return{mode:'stable'};return d.evo[tier]||{mode:'stable'}}
-const state={running:false,paused:false,ending:false,difficultyKey:'normal',menuTime:0,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,dropX:0,lastDropX:null,sameDropStreak:0,dropHeld:false,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,box:{x:0,y:0,w:0,h:0,dangerY:0},gameScale:1,gameOffsetX:0,gameOffsetY:0,bodies:[],particles:[],shockwaves:[],stars:[],keys:new Set(),supernova:null,nebulaEffect:null,audioReady:false,audioCtx:null,soundOn:true};let last=performance.now(),nextId=1;
+const STANDARD_BOX_W=500,STANDARD_BOX_H=680,SPACE_WORLD_W=650,SPACE_WORLD_H=820,SPACE_EXPANSION_SECONDS=300;
+const state={running:false,paused:false,ending:false,difficultyKey:'normal',gameMode:'standard',spaceExpansion:0,menuTime:0,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,dropX:0,lastDropX:null,sameDropStreak:0,dropHeld:false,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,box:{x:0,y:0,w:0,h:0,dangerY:0},gameScale:1,gameOffsetX:0,gameOffsetY:0,bodies:[],particles:[],shockwaves:[],stars:[],keys:new Set(),supernova:null,nebulaEffect:null,audioReady:false,audioCtx:null,soundOn:true};let last=performance.now(),nextId=1;
+function isSpaceMode(){return state.gameMode==='space'}
+function worldGravity(){return isSpaceMode()?58:940}
+function getWorldDimensions(){return isSpaceMode()?{w:SPACE_WORLD_W,h:SPACE_WORLD_H}:{w:STANDARD_BOX_W,h:STANDARD_BOX_H}}
+function getSpaceBoxGeometry(progress=state.spaceExpansion||0){
+ const p=clamp(progress,0,1),w=STANDARD_BOX_W+(SPACE_WORLD_W-STANDARD_BOX_W)*p,h=STANDARD_BOX_H+(SPACE_WORLD_H-STANDARD_BOX_H)*p;
+ const x=(SPACE_WORLD_W-w)/2,y=(SPACE_WORLD_H-h)/2;
+ return{x,y,w,h,dangerY:y+Math.max(72,h*.13)};
+}
+function updateSpaceExpansion(){
+ if(!isSpaceMode())return;
+ const next=clamp(state.time/SPACE_EXPANSION_SECONDS,0,1);
+ if(next<=state.spaceExpansion+1e-7)return;
+ const old={...state.box},neu=getSpaceBoxGeometry(next);
+ const ocx=old.x+old.w/2,ocy=old.y+old.h/2,ncx=neu.x+neu.w/2,ncy=neu.y+neu.h/2;
+ const sx=old.w>0?neu.w/old.w:1,sy=old.h>0?neu.h/old.h:1;
+ const bodySx=1+(sx-1)*.48,bodySy=1+(sy-1)*.48;
+ for(const b of state.bodies){b.x=ncx+(b.x-ocx)*bodySx;b.y=ncy+(b.y-ocy)*bodySy}
+ state.dropX=ncx+(state.dropX-ocx)*(1+(sx-1)*.72);
+ state.spaceExpansion=next;
+ state.box=neu;
+}
+
 function resize(){
  const vw=Math.floor(window.visualViewport?.width||innerWidth),vh=Math.floor(window.visualViewport?.height||innerHeight);
  const dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
@@ -667,37 +708,39 @@ function resize(){
  canvas.style.width=vw+'px';canvas.style.height=vh+'px';
  ctx.setTransform(dpr,0,0,dpr,0,0);
 
- /*
-   동일한 게임성을 위해 통은 모든 기기에서 같은 논리 크기를 사용한다.
-   화면이 작은 모바일에서는 이 논리 통 전체를 축소 표시하고,
-   컴퓨터에서는 원본 크기로 표시한다.
- */
  const isMob=vw<=900;
- const LOGICAL_W=500,LOGICAL_H=680;
- const topSpace=isMob?88:76;
+ const world=getWorldDimensions();
+ // 세로 화면에서는 다음 천체 창이 통 위의 바깥 공간에 놓이도록 상단 여백을 확보한다.
+ const topSpace=isMob&&vh>600?138:(isMob?76:76);
  const bottomSpace=isMob?104:34;
  const marginX=isMob?10:24;
  const availW=Math.max(260,vw-marginX*2);
  const availH=Math.max(320,vh-topSpace-bottomSpace);
- const scale=Math.min(availW/LOGICAL_W,availH/LOGICAL_H,1);
+ const scale=Math.min(availW/world.w,availH/world.h,1);
 
  state.gameScale=scale;
- state.gameOffsetX=(vw-LOGICAL_W*scale)/2;
- state.gameOffsetY=topSpace+Math.max(0,(availH-LOGICAL_H*scale)/2);
- state.box={w:LOGICAL_W,h:LOGICAL_H,x:0,y:0,dangerY:Math.max(72,LOGICAL_H*.13)};
- state.dropX=clamp(state.dropX||LOGICAL_W/2,state.box.x+28,state.box.x+state.box.w-28);
+ state.gameOffsetX=(vw-world.w*scale)/2;
+ state.gameOffsetY=topSpace+Math.max(0,(availH-world.h*scale)/2);
+ state.box=isSpaceMode()?getSpaceBoxGeometry(state.spaceExpansion):{w:STANDARD_BOX_W,h:STANDARD_BOX_H,x:0,y:0,dangerY:Math.max(72,STANDARD_BOX_H*.13)};
+ state.dropX=clamp(state.dropX||state.box.x+state.box.w/2,state.box.x+28,state.box.x+state.box.w-28);
  makeStars()
 }
 function makeStars(){const vw=window.visualViewport?.width||innerWidth,vh=window.visualViewport?.height||innerHeight;state.stars=[];let count=Math.floor(vw*vh/7600);for(let i=0;i<count;i++)state.stars.push({x:Math.random()*vw,y:Math.random()*vh,r:Math.random()*1.5+.25,a:Math.random()*.55+.12,tw:Math.random()*3.7+.7})}
-function reset(){Object.assign(state,{running:true,paused:false,ending:false,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,bodies:[],particles:[],shockwaves:[],supernova:null,nebulaEffect:null,dropX:state.box.w/2,lastDropX:null,sameDropStreak:0,dropHeld:false});ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.endCard.classList.add('hidden');ui.hud.classList.remove('hidden');ui.infoPanel.classList.remove('hidden');ui.touchControls.classList.remove('hidden');updateUI();last=performance.now();requestAnimationFrame(loop)}
+function reset(){
+ Object.assign(state,{running:true,paused:false,ending:false,spaceExpansion:0,score:0,combo:0,fuel:0,bestTier:0,currentTier:0,nextTier:1,canDrop:true,cooldown:0,overfill:0,time:0,shake:0,bodies:[],particles:[],shockwaves:[],supernova:null,nebulaEffect:null,lastDropX:null,sameDropStreak:0,dropHeld:false});
+ resize();state.dropX=state.box.x+state.box.w/2;
+ ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.endCard.classList.add('hidden');ui.hud.classList.remove('hidden');ui.infoPanel.classList.remove('hidden');ui.touchControls.classList.remove('hidden');updateUI();last=performance.now();requestAnimationFrame(loop)
+}
 function loop(now){if(!state.running)return;let dt=Math.min(.033,Math.max(0,(now-last)/1000));last=now;if(!state.paused){if(state.ending){state.time+=dt;updateEffects(dt);updateEndingEffects(dt)}else update(dt)}draw();requestAnimationFrame(loop)}
-function update(dt){state.time+=dt;state.cooldown-=dt;handleDropperMove(dt);if(state.dropHeld&&state.canDrop&&state.cooldown<=0)dropCurrent();updateEvolution(dt);updatePhysics(dt);updateEffects(dt);updateEndingEffects(dt);checkOverfill(dt);updateUI()}
+function update(dt){state.time+=dt;state.cooldown-=dt;updateSpaceExpansion();handleDropperMove(dt);if(state.dropHeld&&state.canDrop&&state.cooldown<=0)dropCurrent();updateEvolution(dt);updatePhysics(dt);updateEffects(dt);updateEndingEffects(dt);checkOverfill(dt);updateUI()}
 function handleDropperMove(dt){let move=360*dt;if(state.keys.has('a')||state.keys.has('ArrowLeft'))state.dropX-=move;if(state.keys.has('d')||state.keys.has('ArrowRight'))state.dropX+=move;let r=TIERS[state.currentTier].r;state.dropX=clamp(state.dropX,state.box.x+r+6,state.box.x+state.box.w-r-6)}
 function updatePhysics(dt){
  let steps=state.bodies.length>18?4:3,step=dt/steps,mergePairs=[];
  for(let s=0;s<steps;s++){
+  if(isSpaceMode())applyMutualGravity(step);
+  const gravity=worldGravity();
   for(const b of state.bodies){
-   b.vy+=940*step;
+   b.vy+=gravity*step;
    b.vx*=.9997;b.vy*=.9996;b.spin*=.9994;
    b.x+=b.vx*step;b.y+=b.vy*step;b.rot+=b.spin*step;
   }
@@ -742,7 +785,7 @@ function applyWalls(b,dt){
   // 바닥 접점의 미끄럼 속도(vx - ωr)를 마찰 충격량으로 줄여 실제로 굴러가게 한다.
   const inertia=bodyInertia(b),slip=b.vx-b.spin*b.r;
   const tangentDenom=1/b.mass+(b.r*b.r)/inertia;
-  const normalImpulse=b.mass*(incoming+940*dt);
+  const normalImpulse=b.mass*(incoming+worldGravity()*dt);
   const maxFriction=.22*normalImpulse;
   const jt=clamp(-slip/tangentDenom,-maxFriction,maxFriction);
   b.vx+=jt/b.mass;
@@ -772,7 +815,7 @@ function solveCollision(a,b,dx,dy,dist,min,dt){
  let relativeTangent=(b.vx-a.vx)*tx+(b.vy-a.vy)*ty-b.spin*b.r-a.spin*a.r;
  let ia=bodyInertia(a),ib=bodyInertia(b);
  let tangentDenom=total+(a.r*a.r)/ia+(b.r*b.r)/ib;
- let restingLoad=Math.min(a.mass,b.mass)*940*dt*Math.abs(ny)*.55;
+ let restingLoad=Math.min(a.mass,b.mass)*worldGravity()*dt*Math.abs(ny)*.55;
  let maxFriction=.115*(normalImpulse+restingLoad);
  let jt=clamp(-relativeTangent/tangentDenom,-maxFriction,maxFriction);
  a.vx-=jt*tx*invA;a.vy-=jt*ty*invA;
@@ -805,7 +848,23 @@ function applyColumnBuckling(dt){
   support.vx-=sign*force*dt*Math.min(.22,upper.mass/(support.mass+upper.mass)*.42);
  }
 }
-function applyMutualGravity(dt){}
+function applyMutualGravity(dt){
+ if(!isSpaceMode()||state.bodies.length<2)return;
+ const G=.62,maxRange=420,maxRange2=maxRange*maxRange;
+ for(let i=0;i<state.bodies.length;i++)for(let j=i+1;j<state.bodies.length;j++){
+  const a=state.bodies[i],b=state.bodies[j];if(a.dead||b.dead)continue;
+  const dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy;
+  if(d2<1e-5||d2>maxRange2)continue;
+  const dist=Math.sqrt(d2),nx=dx/dist,ny=dy/dist;
+  const soften=Math.pow((a.r+b.r)*1.35+24,2),denom=d2+soften;
+  const fade=1-clamp((dist-maxRange*.72)/(maxRange*.28),0,1);
+  const ma=Math.pow(Math.max(1,a.gravMass||a.mass),.72)*10;
+  const mb=Math.pow(Math.max(1,b.gravMass||b.mass),.72)*10;
+  const accA=Math.min(.9,G*mb/denom)*fade,accB=Math.min(.9,G*ma/denom)*fade;
+  a.vx+=nx*accA*dt;a.vy+=ny*accA*dt;
+  b.vx-=nx*accB*dt;b.vy-=ny*accB*dt;
+ }
+}
 function stabilizeBodies(dt){
  const floor=state.box.y+state.box.h;
  for(const a of state.bodies){
@@ -888,16 +947,18 @@ function randomDropTier(){
 
  // 투하 위치를 옮기지 않은 채 연타하거나 길게 누르면 가장 작은 두 분류군의 공급률이 빠르게 올라간다.
  // 난이도 설정과 무관하게 먼저 판정하므로 모든 난이도에 동일하게 적용된다.
- const stationarySpam=clamp(state.sameDropStreak/8,0,1);
- if(state.sameDropStreak>=1){
-  const lowTierChance=clamp(.28+stationarySpam*.64+(state.dropHeld?.06:0),0,.97);
+ const antiIdleGrace=s.antiIdleGrace??0;
+ const antiIdleCount=Math.max(0,state.sameDropStreak-antiIdleGrace);
+ const stationarySpam=clamp(antiIdleCount/(s.antiIdleRamp??8),0,1);
+ if(antiIdleCount>=1){
+  const lowTierChance=clamp((s.antiIdleBase??.28)+stationarySpam*(s.antiIdleGain??.64)+(state.dropHeld?(s.holdBonus??.06):0),0,s.antiIdleMax??.97);
   if(Math.random()<lowTierChance){
-   const rockyChance=.64+stationarySpam*.14;
+   const rockyChance=(s.rockyBase??.64)+stationarySpam*(s.rockyGain??.14);
    return Math.random()<rockyChance?0:1;
   }
  }
 
- const unlocked=Math.max(1,state.bestTier-(s.maxLag??4));
+ const unlocked=Math.max(s.minCap??1,state.bestTier-(s.maxLag??4));
  const cap=Math.max(1,Math.min(s.maxTier??4,unlocked));
  const counts=Array(cap+1).fill(0);
 
@@ -919,7 +980,8 @@ function randomDropTier(){
     +(counts[i+1]||0)*s.neighborBias*.35
     +(gap===0?s.fieldBias*.30:gap===1?s.fieldBias*.16:0);
   const high=(i===cap&&cap>=2)?s.highChance*.45:0;
-  weights[i]=Math.max(.03,lowPreference*(1-s.bigBias)+advanced+field+high);
+  const tierWeight=Array.isArray(s.tierWeights)?(s.tierWeights[i]??1):1;
+  weights[i]=Math.max(.03,(lowPreference*(1-s.bigBias)+advanced+field+high)*tierWeight);
  }
 
  // 고단계 직접 공급은 보너스가 아니라 드문 예외에 가깝게 유지한다.
@@ -981,6 +1043,38 @@ function updateEvolution(dt){
   const rule=getEvoRule(b.tier);
   if(!rule||rule.mode==='stable')continue;
   b.age+=dt;
+
+  // 크레이지 난이도의 갈색왜성은 장시간 핵융합을 유지하지 못하고
+  // 마지막 구간에서 서서히 식고 수축한 뒤 일반 초목성형 행성으로 돌아간다.
+  if(rule.mode==='cool_sj'){
+   const life=Math.max(.1,rule.life||1),cool=Math.max(.1,rule.cool||1),total=life+cool;
+   const bdBase=TIERS[BROWN_DWARF_TIER].r,sj=TIERS[SUPER_JUPITER_TIER];
+   if(b.age<life){
+    b.evoPhase='normal';
+    b.evoProgress=clamp(b.age/total,0,1);
+    b.coolingProgress=0;
+    setPhysicalRadius(b,bdBase,dt,4.0);
+    b.visualR=bdBase*(1+.009*Math.sin(state.time*.72+b.pulseSeed));
+    b.thermal=clamp(.72-.18*(b.age/life),0,1);
+    b.gravMass=b.mass;
+   }else if(b.age<total){
+    const p=clamp((b.age-life)/cool,0,1),ease=smoothstep(p);
+    b.evoPhase='cooling';
+    b.evoProgress=clamp(b.age/total,0,1);
+    b.coolingProgress=p;
+    const targetR=bdBase+(sj.r-bdBase)*ease;
+    setPhysicalRadius(b,targetR,dt,4.8);
+    b.visualR=b.r*(1+.006*Math.sin(state.time*(1.1+p*.8)+b.pulseSeed));
+    b.thermal=clamp(.54-.46*ease,0,1);
+    b.gravMass=b.mass*(1-.12*ease);
+    if(Math.random()<dt*(.55+p*.9)){
+     const a=Math.random()*Math.PI*2;
+     state.particles.push({x:b.x+Math.cos(a)*b.visualR*.74,y:b.y+Math.sin(a)*b.visualR*.74,vx:Math.cos(a)*(8+Math.random()*18),vy:Math.sin(a)*(8+Math.random()*18)-5,size:.7+Math.random()*1.5,color:mixColor(TIERS[BROWN_DWARF_TIER].glow,TIERS[SUPER_JUPITER_TIER].glow,ease),life:.34+Math.random()*.34,text:null});
+    }
+   }else transformBrownDwarfToSuperJupiter(b);
+   continue;
+  }
+
   const life=rule.life,giant=rule.giant,pulse=rule.pulse,base=b.baseR||TIERS[b.tier].r;
   const cap=giantScaleCap(b.tier);
   const maxGiantScale=Math.min(rule.expand,cap);
@@ -1102,6 +1196,26 @@ function setPhysicalRadius(b,target,dt,rate=1.2){
  }
 }
 function smoothstep(t){t=clamp(t,0,1);return t*t*(3-2*t)}
+function transformBrownDwarfToSuperJupiter(b){
+ if(b.dead||b.whiteDwarf||b.tier!==BROWN_DWARF_TIER)return;
+ const target=TIERS[SUPER_JUPITER_TIER];
+ b.tier=SUPER_JUPITER_TIER;
+ b.baseR=target.r;
+ b.r=target.r;
+ b.visualR=target.r;
+ b.targetR=target.r;
+ b.mass=Math.max(1,target.r*target.r*(target.density??1));
+ b.gravMass=b.mass;
+ b.age=0;
+ b.evoPhase='normal';
+ b.evoProgress=0;
+ b.coolingProgress=0;
+ b.thermal=.22;
+ b.fresh=Math.max(b.fresh||0,.18);
+ b.spin*=.76;
+ popText(b.x,b.y-b.r-8,'냉각 · SJ 수축','#fdba74');
+ soundBlip(118,.08,'sine',.028);
+}
 function transformToWhiteDwarf(b){
  if(b.whiteDwarf||b.dead)return;
  const oldR=b.r,x=b.x,y=b.y,t=TIERS[b.tier];
@@ -1146,14 +1260,14 @@ function checkOverfill(dt){
 }
 function triggerCollapseEnding(){state.ending=true;let cx=state.box.x+state.box.w/2,cy=state.box.y+state.box.h*.38;state.nebulaEffect={x:cx,y:cy,t:0,d:1.7};burst(cx,cy,180,'#fb7185',1.8,250);burst(cx,cy,120,'#fbbf24',1.5,210);shockwave(cx,cy,10,Math.max(state.box.w,state.box.h)*.75,'#fb7185');soundNebula();setTimeout(()=>{showEnding('항성장 붕괴',`천체가 한계선 위에 오래 머물러 병합장이 불안정해졌습니다. 최종 점수는 ${state.score}점, 최고 단계는 ${TIERS[state.bestTier].name}입니다.`,'천체 밀도가 한계치를 넘어 항성장이 붕괴했습니다. 더 큰 별을 만들기 전에 공간을 확보하고, 늙은 별의 외피 방출을 이용해 흐름을 되돌리십시오.');state.running=false;draw()},1700)}
 function triggerTypeIaSupernova(x,y,wdMass){state.score+=12000+Math.round(wdMass*4000);state.shake=38;burst(x,y,260,'#ffffff',2.1,620);burst(x,y,260,'#e0f2fe',2.4,540);burst(x,y,120,'#fef3c7',1.9,460);shockwave(x,y,10,Math.max(innerWidth,innerHeight)*.95,'#e0f2fe');triggerSupernova(x,y,'ia')}
-function triggerSupernova(x,y,source='merge'){state.ending=true;state.score+=source==='merge'?50000:source==='ia'?26000:32000;state.bestTier=TIERS.length-1;state.bodies=[];state.shake=source==='ia'?42:34;state.supernova={x,y,t:0,d:source==='ia'?2.35:2.8,kind:source};burst(x,y,source==='ia'?620:520,'#ffffff',source==='ia'?2.4:2.7,source==='ia'?820:720);burst(x,y,source==='ia'?470:360,'#60a5fa',source==='ia'?2.6:3.0,source==='ia'?690:610);burst(x,y,source==='ia'?160:300,'#fb7185',2.6,540);burst(x,y,source==='ia'?260:230,'#fbbf24',2.4,500);shockwave(x,y,12,Math.max(innerWidth,innerHeight)*1.15,'#ffffff');shockwave(x,y,32,Math.max(innerWidth,innerHeight)*.72,'#60a5fa');soundSupernova();setTimeout(()=>{let title,text,route;if(source==='merge'){title='초신성 엔딩';text=`O형 주계열성 두 개가 병합되어 거대한 폭발을 일으켰습니다. 최종 점수는 ${state.score}점입니다.`;route='암석행성과 미니 해왕성에서 시작한 천체들이 고질량 주계열성으로 성장했고, 마지막 충돌은 우주를 가르는 초신성으로 이어졌습니다.'}else if(source==='ia'){title='Ia형 초신성 엔딩';text=`백색왜성 병합 질량이 한계를 넘어 열핵 폭발을 일으켰습니다. 최종 점수는 ${state.score}점입니다.`;route='식어가던 별의 잔해들이 한계를 넘어섰습니다. 조용한 백색왜성은 다시 눈부신 열핵 폭발로 타올랐습니다.'}else{title='핵붕괴 초신성 엔딩';text=`고질량 주계열성이 수명을 다해 핵붕괴 초신성으로 폭발했습니다. 최종 점수는 ${state.score}점입니다.`;route='고질량 별의 중심핵이 버티지 못하고 무너졌습니다. 남은 것은 초신성의 빛과 극도로 밀집된 잔해뿐입니다.'}showEnding(title,text,route);state.running=false;draw()},source==='ia'?2350:2800)}
+function triggerSupernova(x,y,source='merge'){state.ending=true;state.score+=source==='merge'?50000:source==='ia'?26000:32000;if(source==='merge')state.bestTier=TIERS.length-1;state.bodies=[];state.shake=source==='ia'?42:34;state.supernova={x,y,t:0,d:source==='ia'?2.35:2.8,kind:source};burst(x,y,source==='ia'?620:520,'#ffffff',source==='ia'?2.4:2.7,source==='ia'?820:720);burst(x,y,source==='ia'?470:360,'#60a5fa',source==='ia'?2.6:3.0,source==='ia'?690:610);burst(x,y,source==='ia'?160:300,'#fb7185',2.6,540);burst(x,y,source==='ia'?260:230,'#fbbf24',2.4,500);shockwave(x,y,12,Math.max(innerWidth,innerHeight)*1.15,'#ffffff');shockwave(x,y,32,Math.max(innerWidth,innerHeight)*.72,'#60a5fa');soundSupernova();setTimeout(()=>{let title,text,route;if(source==='merge'){title='초신성 엔딩';text=`O형 주계열성 두 개가 병합되어 거대한 폭발을 일으켰습니다. 최종 점수는 ${state.score}점입니다.`;route='암석행성과 미니 해왕성에서 시작한 천체들이 고질량 주계열성으로 성장했고, 마지막 충돌은 우주를 가르는 초신성으로 이어졌습니다.'}else if(source==='ia'){title='Ia형 초신성 엔딩';text=`백색왜성 병합 질량이 한계를 넘어 열핵 폭발을 일으켰습니다. 최종 점수는 ${state.score}점입니다.`;route='식어가던 별의 잔해들이 한계를 넘어섰습니다. 조용한 백색왜성은 다시 눈부신 열핵 폭발로 타올랐습니다.'}else{title='핵붕괴 초신성 엔딩';text=`고질량 주계열성이 수명을 다해 핵붕괴 초신성으로 폭발했습니다. 최종 점수는 ${state.score}점입니다.`;route='고질량 별의 중심핵이 버티지 못하고 무너졌습니다. 남은 것은 초신성의 빛과 극도로 밀집된 잔해뿐입니다.'}showEnding(title,text,route);state.running=false;draw()},source==='ia'?2350:2800)}
 function showEnding(title,text,route){ui.endTitle.textContent=title;ui.endText.textContent=text;ui.endRoute.textContent=route;ui.touchControls.classList.add('hidden');ui.endCard.classList.remove('hidden');updateUI()}
 function updateEffects(dt){for(const p of state.particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.992;p.vy*=.992;p.life-=dt;p.size*=.992}state.particles=state.particles.filter(p=>p.life>0&&p.size>.1);for(const s of state.shockwaves){s.r+=s.speed*dt;s.life-=dt}state.shockwaves=state.shockwaves.filter(s=>s.life>0);if(state.shake>0){state.shake*=.88;if(state.shake<.25)state.shake=0}}
 function updateEndingEffects(dt){if(state.supernova)state.supernova.t+=dt;if(state.nebulaEffect){state.nebulaEffect.t+=dt;if(!state.ending&&state.nebulaEffect.t>state.nebulaEffect.d)state.nebulaEffect=null}}
 function burst(x,y,count,color,life=.8,speed=160){for(let i=0;i<count;i++){let a=Math.random()*Math.PI*2,s=speed*(.24+Math.random()*.9);state.particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,size:1.2+Math.random()*4.4,color,life:life*(.5+Math.random()*.85),text:null})}}
 function popText(x,y,text,color){state.particles.push({x,y,vx:0,vy:-44,size:1,color,life:.95,text})}
 function shockwave(x,y,start,end,color){state.shockwaves.push({x,y,r:start,end,speed:Math.max(80,(end-start)/.7),color,life:.7})}
-function updateUI(){const d=difficulty(),lim=d.overLimit||3;ui.score.textContent=state.score;ui.best.textContent=TIERS[state.bestTier].name;ui.combo.textContent=state.combo;ui.danger.textContent=Math.round(clamp(state.overfill/lim,0,1)*100);if(ui.difficultyName)ui.difficultyName.textContent=d.label;ui.currentName.textContent=TIERS[state.currentTier].name;ui.nextName.textContent=TIERS[state.nextTier].name;ui.fuelBar.style.width=Math.round(state.fuel)+'%';ui.overBar.style.width=Math.round(clamp(state.overfill/lim,0,1)*100)+'%'}
+function updateUI(){const d=difficulty(),lim=d.overLimit||3;ui.score.textContent=state.score;ui.best.textContent=TIERS[state.bestTier].name;ui.combo.textContent=state.combo;ui.danger.textContent=Math.round(clamp(state.overfill/lim,0,1)*100);if(ui.difficultyName)ui.difficultyName.textContent=d.label+(isSpaceMode()?' · 우주':'');ui.currentName.textContent=TIERS[state.currentTier].name;ui.nextName.textContent=TIERS[state.nextTier].name;ui.fuelBar.style.width=Math.round(state.fuel)+'%';ui.overBar.style.width=Math.round(clamp(state.overfill/lim,0,1)*100)+'%'}
 function draw(){
  const vw=window.visualViewport?.width||innerWidth,vh=window.visualViewport?.height||innerHeight;
  ctx.clearRect(0,0,vw,vh);
@@ -1169,6 +1283,7 @@ function draw(){
  drawBox();drawDropper();drawBodies();drawShockwaves();drawSupernovaEffect();drawNebulaEffect();drawParticles();
  ctx.restore();
 
+ drawNextObjectWindow(vw,vh);
  if(state.paused)drawPaused();
  ctx.restore()
 }
@@ -1324,6 +1439,41 @@ function drawSpace(){ctx.fillStyle='#050711';ctx.fillRect(0,0,innerWidth,innerHe
 function drawBox(){let b=state.box;ctx.save();ctx.fillStyle='rgba(4,8,20,.34)';roundRect(b.x,b.y,b.w,b.h,22);ctx.fill();ctx.strokeStyle='rgba(148,163,184,.35)';ctx.lineWidth=2;roundRect(b.x,b.y,b.w,b.h,22);ctx.stroke();ctx.strokeStyle='rgba(251,113,133,.7)';ctx.lineWidth=2;ctx.setLineDash([10,10]);ctx.beginPath();ctx.moveTo(b.x+12,b.dangerY);ctx.lineTo(b.x+b.w-12,b.dangerY);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(251,113,133,.82)';ctx.font='800 12px system-ui';ctx.textAlign='right';ctx.fillText('붕괴 한계선',b.x+b.w-16,b.dangerY-8);ctx.textAlign='left';let bottom=ctx.createLinearGradient(0,b.y+b.h-80,0,b.y+b.h);bottom.addColorStop(0,'rgba(96,165,250,0)');bottom.addColorStop(1,'rgba(96,165,250,.10)');ctx.fillStyle=bottom;roundRect(b.x,b.y,b.w,b.h,22);ctx.fill();ctx.restore()}
 function drawGravityFields(){for(const b of state.bodies){if(b.tier<FIRST_STAR_TIER&&!b.whiteDwarf)continue;let a=b.whiteDwarf?.55:clamp((b.tier-(FIRST_STAR_TIER-1))/7,0,1),pulse=.5+Math.sin(state.time*2+b.id)*.5,col=b.whiteDwarf?'#e0f2fe':TIERS[b.tier].glow;ctx.strokeStyle=hexToRgba(col,.05+.075*a*pulse);ctx.lineWidth=1;ctx.setLineDash([4,10]);ctx.beginPath();ctx.arc(b.x,b.y,b.r*(2.25+a*.9),0,Math.PI*2);ctx.stroke();ctx.setLineDash([])}}
 function drawDropper(){if(!state.running||state.paused||state.ending)return;let tier=TIERS[state.currentTier],y=state.box.y+28;ctx.strokeStyle='rgba(103,232,249,.35)';ctx.lineWidth=1.5;ctx.setLineDash([5,8]);ctx.beginPath();ctx.moveTo(state.dropX,state.box.y);ctx.lineTo(state.dropX,state.box.y+state.box.h);ctx.stroke();ctx.setLineDash([]);drawCelestial(state.dropX,y,tier.r,state.currentTier,state.time*.9,.88);ctx.fillStyle='rgba(238,245,255,.88)';ctx.font='800 12px system-ui';ctx.textAlign='center';ctx.fillText('투하',state.dropX,y-tier.r-11);ctx.textAlign='left'}
+function getNextObjectWindowRect(vw,vh){
+ const size=vw<=900?72:88,pad=10;
+ const left=state.gameOffsetX+state.box.x*state.gameScale;
+ const right=state.gameOffsetX+(state.box.x+state.box.w)*state.gameScale;
+ const top=state.gameOffsetY+state.box.y*state.gameScale;
+ const bottom=state.gameOffsetY+(state.box.y+state.box.h)*state.gameScale;
+ const sideStart=vw>900?vw-358:vw;
+ const candidates=[
+  {x:right+pad,y:top},
+  {x:left-pad-size,y:top},
+  {x:right-size,y:top-pad-size},
+  {x:right-size,y:bottom+pad}
+ ];
+ for(const q of candidates){
+  if(q.x>=8&&q.y>=8&&q.x+size<=sideStart-8&&q.y+size<=vh-8)return{x:q.x,y:q.y,w:size,h:size};
+ }
+ // resize()가 확보한 상단 공간을 사용하는 최종 배치이며, 통 내부로는 들어가지 않는다.
+ return{x:clamp(right-size,8,vw-size-8),y:Math.max(8,top-pad-size),w:size,h:size};
+}
+function drawNextObjectWindow(vw,vh){
+ if(!state.running||state.ending)return;
+ const q=getNextObjectWindowRect(vw,vh),tierIndex=state.nextTier,t=TIERS[tierIndex];
+ ctx.save();
+ ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=18;
+ ctx.fillStyle='rgba(7,12,27,.86)';roundRect(q.x,q.y,q.w,q.h,12);ctx.fill();
+ ctx.shadowBlur=0;
+ ctx.strokeStyle='rgba(148,163,184,.42)';ctx.lineWidth=1.4;roundRect(q.x,q.y,q.w,q.h,12);ctx.stroke();
+ ctx.fillStyle='rgba(203,213,225,.90)';ctx.font='900 10px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('다음',q.x+q.w/2,q.y+11);
+ ctx.save();roundRect(q.x+3,q.y+18,q.w-6,q.h-22,9);ctx.clip();
+ const rr=clamp(t.r*(q.w<80?.47:.56),9,q.w<80?17:21),cy=q.y+(q.h<80?40:48);
+ drawCelestial(q.x+q.w/2,cy,rr,tierIndex,state.time*.72,.96);
+ ctx.restore();
+ ctx.fillStyle='rgba(255,255,255,.94)';ctx.font='900 10px system-ui';ctx.fillText(t.short,q.x+q.w/2,q.y+q.h-9);
+ ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.restore();
+}
 function drawBodies(){for(const b of [...state.bodies].sort((a,b)=>a.r-b.r))drawBody(b)}
 function getGiantBodyWobble(b){
  if(!(b.evoPhase==='giant'||b.evoPhase==='pulse'))return{sx:1,sy:1,rot:0,dx:0,dy:0};
@@ -1392,10 +1542,10 @@ function drawEvolutionOverlay(b){
   g.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=g;ctx.beginPath();ctx.arc(b.x,b.y,vr*(1.18+rough*.10),0,Math.PI*2);ctx.fill();
  }
- if(rule.mode==='wd'||rule.mode==='sn'){
-  let total=rule.life+rule.giant+rule.pulse,prog=clamp(b.age/total,0,1);
+ if(rule.mode==='wd'||rule.mode==='sn'||rule.mode==='cool_sj'){
+  let total=rule.mode==='cool_sj'?(rule.life+rule.cool):(rule.life+rule.giant+rule.pulse),prog=clamp(b.age/total,0,1);
   ctx.globalCompositeOperation='source-over';
-  ctx.strokeStyle=b.evoPhase==='normal'?'rgba(255,255,255,.22)':hexToRgba(colors.glow,.52);
+  ctx.strokeStyle=b.evoPhase==='normal'?'rgba(255,255,255,.22)':b.evoPhase==='cooling'?hexToRgba(mixColor('#f97316','#64748b',b.coolingProgress||0),.72):hexToRgba(colors.glow,.52);
   ctx.lineWidth=Math.max(1.3,vr*.025);
   ctx.beginPath();ctx.arc(b.x,b.y,vr+4,-Math.PI/2,-Math.PI/2+Math.PI*2*prog);ctx.stroke();
  }
@@ -1403,6 +1553,14 @@ function drawEvolutionOverlay(b){
 }
 function getBodyColors(b){
  const t=TIERS[b.tier];
+ if(b&&b.tier===BROWN_DWARF_TIER&&b.evoPhase==='cooling'){
+  const p=smoothstep(clamp(b.coolingProgress||0,0,1)),sj=TIERS[SUPER_JUPITER_TIER];
+  return{
+   color1:mixColor(t.color1,mixColor(sj.color1,'#cbd5e1',.22),p),
+   color2:mixColor(t.color2,mixColor(sj.color2,'#334155',.24),p),
+   glow:mixColor(t.glow,mixColor(sj.glow,'#94a3b8',.30),p)
+  };
+ }
  if(!b||!(b.evoPhase==='giant'||b.evoPhase==='pulse'))return{color1:t.color1,color2:t.color2,glow:t.glow};
  const temp=clamp(b.thermal??.45,0,1);
  const giantPalette={
@@ -1596,7 +1754,14 @@ function setDifficulty(key){
 }
 window.addEventListener('resize',resize);if(window.visualViewport)visualViewport.addEventListener('resize',resize);window.addEventListener('mousemove',e=>{state.dropX=clamp(screenToGameX(e.clientX),state.box.x+28,state.box.x+state.box.w-28)});canvas.addEventListener('click',dropCurrent);canvas.addEventListener('touchmove',e=>{let t=e.touches[0];if(t)state.dropX=clamp(screenToGameX(t.clientX),state.box.x+28,state.box.x+state.box.w-28);e.preventDefault()},{passive:false});canvas.addEventListener('touchstart',e=>{let t=e.touches[0];if(t)state.dropX=clamp(screenToGameX(t.clientX),state.box.x+28,state.box.x+state.box.w-28);e.preventDefault()},{passive:false});
 window.addEventListener('keydown',e=>{state.keys.add(e.key);if(e.key===' '||e.code==='Space'){e.preventDefault();if(!state.dropHeld){state.dropHeld=true;dropCurrent()}}if(e.key==='e'||e.key==='E')igniteCurrent();if(e.key==='p'||e.key==='P'){if(state.running)state.paused=!state.paused}if(e.key==='r'||e.key==='R'){if(state.running)reset()}if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault()},{passive:false});window.addEventListener('keyup',e=>{state.keys.delete(e.key);if(e.key===' '||e.code==='Space')state.dropHeld=false});window.addEventListener('blur',()=>{state.dropHeld=false;state.keys.delete(' ')});document.addEventListener('visibilitychange',()=>{if(document.hidden)state.dropHeld=false});document.querySelectorAll('.diffBtn').forEach(btn=>btn.addEventListener('click',()=>setDifficulty(btn.dataset.diff)));
-gid('menuStartBtn').addEventListener('click',()=>{ui.touchControls.classList.add('hidden');ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.remove('hidden')});
+function openDifficulty(mode){
+ state.gameMode=mode==='space'?'space':'standard';
+ if(ui.difficultyTitle)ui.difficultyTitle.textContent=isSpaceMode()?'우주 모드 난이도 선택':'난이도 선택';
+ gid('startBtn').textContent=isSpaceMode()?'우주 모드 시작하기':'게임 시작하기';
+ ui.touchControls.classList.add('hidden');ui.mainMenuCard.classList.add('hidden');ui.difficultyCard.classList.remove('hidden');resize();updateUI();
+}
+gid('menuStartBtn').addEventListener('click',()=>openDifficulty('standard'));
+gid('spaceModeBtn').addEventListener('click',()=>openDifficulty('space'));
 gid('difficultyBackBtn').addEventListener('click',()=>{ui.touchControls.classList.add('hidden');ui.difficultyCard.classList.add('hidden');ui.mainMenuCard.classList.remove('hidden')});
 gid('settingsBtn').addEventListener('click',()=>{ui.touchControls.classList.add('hidden');ui.mainMenuCard.classList.add('hidden');ui.settingsCard.classList.remove('hidden')});
 gid('settingsBackBtn').addEventListener('click',()=>{ui.touchControls.classList.add('hidden');ui.settingsCard.classList.add('hidden');ui.mainMenuCard.classList.remove('hidden')});
@@ -1605,6 +1770,6 @@ gid('startBtn').addEventListener('click',()=>{unlockAudio();reset()});gid('resta
 resize();setDifficulty('normal');updateUI();startIdleMenuLoop();draw();
 function startIdleMenuLoop(){let prev=performance.now();function tick(now){let dt=Math.min(.033,Math.max(0,(now-prev)/1000));prev=now;if(!state.running){state.menuTime=Math.min(70,(state.menuTime||0)+dt);draw()}requestAnimationFrame(tick)}requestAnimationFrame(tick)}
 </script>
-<!-- Physics revision: rolling/sliding contacts, column buckling, K/M evolution timer visibility, giant-body wobble, inherited giant-core evolution timers, rocky/mini-Neptune tiers, stationary-repeat low-tier supply -->
+<!-- Physics revision: rolling/sliding contacts, column buckling, K/M evolution timer visibility, giant-body wobble, inherited giant-core evolution timers, rocky/mini-Neptune tiers, stationary-repeat low-tier supply, crazy/hard brown-dwarf cooling contraction, outside next-object preview, Ia best-tier fix, bounded space expansion and weak mass gravity, subtle menu-title glow, normal-mode spawn rebalance -->
 </body>
 </html>
